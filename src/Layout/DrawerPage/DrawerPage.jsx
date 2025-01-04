@@ -28,9 +28,9 @@ import { Outlet, useNavigate } from 'react-router-dom';
 
 const drawerMenu = [
     {
-        name:'Dashbord',
+        name:'Home',
         icon:<GridViewIcon/>,
-        path:'/dashbord'
+        path:'/home'
     },
     {
         name:'Student',
@@ -60,6 +60,7 @@ const DrawerPage = (props) => {
     const { window } = props;
     const [mobileOpen, setMobileOpen] = React.useState(false);
     const [isClosing, setIsClosing] = React.useState(false);
+    const [selectedTab, setSelecetedTab] = React.useState('Home');
 
     const navigate = useNavigate()
   
@@ -102,15 +103,24 @@ const DrawerPage = (props) => {
                     <ListItem key={text} >
                         <ListItemButton
                             sx={{
-                                bgcolor: COLORS.lightBlue,
+                                bgcolor: selectedTab === text.name? COLORS.hoverBlue:COLORS.lightBlue,
                                 mb: 2,
                                 borderRadius: '20px',
-                                color: COLORS.black,
-                                px:5
+                                color: selectedTab === text.name ? COLORS.white : COLORS.black,
+                                px:5,
+                                ":hover":{
+                                    bgcolor:COLORS.hoverBlue,
+                                    color:COLORS.white
+                                }
                             }}
-                            onClick={()=>navigate(text.path)}
+                            onClick={()=>{navigate(text.path); setSelecetedTab(text.name)}}
                         >
-                            <ListItemIcon>
+                            <ListItemIcon sx={{
+                                color:selectedTab === text.name ? COLORS.white : COLORS.black,
+                                ":hover":{
+                                    color:COLORS.white
+                                }
+                                }}>
                                 {text.icon}
                             </ListItemIcon>
                             <ListItemText primary={text.name} primaryTypographyProps={{
@@ -141,7 +151,10 @@ const DrawerPage = (props) => {
           display: { sm: 'none' }
         }}
       >
-        <Toolbar>
+        <Toolbar sx={{
+            bgcolor:COLORS.white,
+            color:COLORS.bgBlue
+        }}>
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -152,7 +165,7 @@ const DrawerPage = (props) => {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-            Responsive drawer
+            History Class
           </Typography>
         </Toolbar>
       </AppBar>

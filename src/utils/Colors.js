@@ -6,7 +6,8 @@ const COLORS = {
     lightBlue1:'#C2E8F8',
     black:'#000000',
     white:'#FFFFFF',
-    green1:'#0A5F6F'
+    green1:'#0A5F6F',
+    hoverBlue:'#0437F2'
 
 }
 
