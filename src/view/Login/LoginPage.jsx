@@ -5,10 +5,13 @@ import initAdd from '../../assets/initAdd.jpg';
 import logo from '../../assets/logo.jpeg';
 import { inputBaseClasses } from '@mui/material/InputBase';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
     const [advaticement, setadvaticement] = useState(initAdd);
     const [showPassword, setShowPassword] = React.useState(false);
+
+    const navigate = useNavigate();
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
     const handleMouseDownPassword = (event) => {
@@ -152,7 +155,9 @@ const LoginPage = () => {
                         ":hover":{
                             bgcolor:COLORS.blue1
                         }
-                    }}>
+                    }}
+                    onClick={()=>navigate('/home')}
+                    >
                         Log in
                     </Button>
 
