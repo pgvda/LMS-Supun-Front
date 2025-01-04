@@ -40,17 +40,17 @@ const drawerMenu = [
     {
         name:'Marks',
         icon:<RuleIcon/>,
-        path:'/marks'
+        path:'/devIndicate'
     },
     {
         name:'Annalise',
         icon:<TimelineIcon/>,
-        path:'/annalise'
+        path:'/devIndicate'
     },
     {
         name:'Add Student',
         icon:<PersonAddAltIcon/>,
-        path:'/add/student'
+        path:'/devIndicate'
     }
 ]
 

@@ -141,8 +141,11 @@ const LoginPage = () => {
                     <Typography sx={{
                         fontSize:'12px',
                         color:COLORS.blue1,
-                        fontWeight:700
-                    }}>
+                        fontWeight:700,
+                        cursor:'pointer'
+                    }}
+                    onClick={()=>navigate('/register')}
+                    >
                         Sign Up
                     </Typography>
                     </Box>
