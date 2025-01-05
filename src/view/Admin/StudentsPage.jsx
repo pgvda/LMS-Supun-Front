@@ -50,7 +50,7 @@ const StudentsPage = () => {
     };
 
     return (
-        <Box>
+        <Box sx={{minHeight:'75vh'}}>
             <Box>
                 <Typography sx={{
                     fontSize: { xs: '18px', md: '20px' },

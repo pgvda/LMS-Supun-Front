@@ -36,7 +36,7 @@ const HomePage = () => {
   }, []);
 
   return (
-    <Box p={3}>
+    <Box p={3} sx={{minHeight:'75vh'}}>
       <Typography variant="h4" gutterBottom>
         Google Drive Files
       </Typography>
