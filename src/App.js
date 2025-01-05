@@ -8,6 +8,7 @@ import RegisterPage from './view/Register/RegisterPage';
 import DevIndicate from './view/DevIndicate';
 import ForgotPasswordPage from './view/ForgotPassword/ForgotPasswordPage';
 import Footer from './Layout/Footer/Footer';
+import ProfilePage from './view/ProfilePage';
 
 // Layout Component for DrawerPage Routes
 function DrawerLayout() {
@@ -28,11 +29,12 @@ function App() {
           <Route path='/register' element={<RegisterPage />} />
           <Route path='/forgotPassword' element={<ForgotPasswordPage />} />
           
-          {/* Drawer Layout with Footer */}
+         
           <Route path='/' element={<DrawerLayout />}>
             <Route path='home' element={<HomePage />} />
             <Route path='students' element={<StudentsPage />} />
             <Route path='devIndicate' element={<DevIndicate />} />
+            <Route path='profile' element={<ProfilePage />} />
           </Route>
         </Routes>
       </HashRouter>

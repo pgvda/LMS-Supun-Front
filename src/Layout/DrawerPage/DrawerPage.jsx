@@ -25,6 +25,7 @@ import { Avatar, Button } from '@mui/material';
 import COLORS from '../../utils/Colors';
 import profile from '../../assets/logo.jpeg'
 import { Outlet, useNavigate } from 'react-router-dom';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 const drawerMenu = [
     {
@@ -51,7 +52,12 @@ const drawerMenu = [
         name:'Add Student',
         icon:<PersonAddAltIcon/>,
         path:'/devIndicate'
-    }
+    },
+    {
+      name:'Profile',
+      icon:<AccountCircleIcon/>,
+      path:'/profile'
+  }
 ]
 
 const drawerWidth = 320;
