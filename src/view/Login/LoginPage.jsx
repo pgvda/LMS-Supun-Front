@@ -134,8 +134,14 @@ const LoginPage = () => {
                     <Typography sx={{
                         fontSize:'12px',
                         color:COLORS.lightBlue,
-                        fontWeight:700
-                    }}>
+                        fontWeight:700,
+                        cursor:'pointer',
+                        ":hover":{
+                            color:COLORS.bgBlue
+                        }
+                    }}
+                    onClick={()=>navigate('/forgotPassword')}
+                    >
                         Forgot Password
                     </Typography>
                     <Typography sx={{

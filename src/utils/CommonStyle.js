@@ -18,7 +18,10 @@ const BlueButton = styled(Button)({
     textTransform:"capitalize",
     fontWeight:400,
     px:2,
-    minWidth:'200px'
+    minWidth:'200px',
+    ":hover":{
+      scale:1.1
+    }
 })
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
