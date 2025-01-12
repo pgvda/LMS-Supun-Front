@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Card,
@@ -26,6 +26,8 @@ import {
   Phone,
   LocationOn
 } from '@mui/icons-material';
+import axios from 'axios';
+import Api from '../utils/Api';
 
 const ProfilePage = () => {
   const theme = useTheme();
@@ -54,6 +56,11 @@ const ProfilePage = () => {
 
   const [editMode, setEditMode] = useState({});
 
+  const id = localStorage.getItem('id');
+  const token = localStorage.getItem('token');
+
+  console.log(id)
+
   const handleEditClick = (field) => {
     setEditMode(prev => ({ ...prev, [field]: !prev[field] }));
   };
@@ -70,6 +77,46 @@ const ProfilePage = () => {
     console.log('Password changed:', passwordFields);
     alert('Password changed successfully!');
   };
+
+  const fetchData = async() => {
+    try{
+      const response = await axios.get(Api + 'students/student/getbyid/' + id ,{
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      console.log(response);
+      if(response.data.code === 200){
+        const data = response.data.data;
+
+
+          setProfileData({
+            profileImage: data.profileImg,
+            name: data.name,
+            email: data.email,
+            accountType: data.accountType,
+            accountState: data.accountState,
+            batch: data.batch,
+            classType: data.classType,
+            whatsAppNo: data.whatsAppNo,
+            additionalNo: data.additionalNo,
+            district: data.district,
+            scl: data.scl,
+            address: data.address,
+            studentIdINo: data.studentIdImg,
+            registrationNo: data.regNo
+          })
+
+      }
+    }catch(err){
+      console.error(err);
+    }
+  }
+
+  useEffect(()=>{
+    fetchData();
+  },[id])
 
   const renderTextField = (label, field, value, icon) => (
     <Box sx={{ mb: 2 }}>

@@ -84,6 +84,11 @@ const DrawerPage = (props) => {
         setMobileOpen(!mobileOpen);
       }
     };
+
+    const handleLogOut = () => {
+      localStorage.clear();
+      navigate('/')
+    }
   
     const drawer = (
       <div style={{backgroundColor:COLORS.bgBlue, height:'100%'}}>
@@ -140,6 +145,7 @@ const DrawerPage = (props) => {
                     </ListItem>
                 ))}
             </List>
+            <Button onClick={handleLogOut}>Log Out</Button>
       </div>
     );
   
