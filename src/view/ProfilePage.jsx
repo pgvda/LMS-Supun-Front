@@ -38,20 +38,20 @@ const ProfilePage = () => {
   });
   
   const [profileData, setProfileData] = useState({
-    profileImage: '/api/placeholder/150/150',
-    name: 'John Doe',
-    email: 'john.doe@example.com',
-    accountType: 'Premium',
-    accountState: 'Active',
-    batch: '2023',
-    classType: 'Full-Time',
-    whatsAppNo: '123-456-7890',
+    profileImage: '',
+    name: '',
+    email: '',
+    accountType: '',
+    accountState: '',
+    batch: '',
+    classType: '',
+    whatsAppNo: '',
     additionalNo: '',
-    district: 'Colombo',
-    scl: 'ABC High School',
-    address: '123 Main St, City',
-    studentIdINo: 'ST123456',
-    registrationNo: 'REG789123'
+    district: '',
+    scl: '',
+    address: '',
+    studentIdINo: '',
+    registrationNo: ''
   });
 
   const [editMode, setEditMode] = useState({});
