@@ -6,10 +6,15 @@ import logo from '../../assets/logo.jpeg';
 import { inputBaseClasses } from '@mui/material/InputBase';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+import Api from '../../utils/Api';
+import axios from 'axios';
+import Swal from 'sweetalert2';
 
 const LoginPage = () => {
     const [advaticement, setadvaticement] = useState(initAdd);
     const [showPassword, setShowPassword] = React.useState(false);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
     const navigate = useNavigate();
 
@@ -21,6 +26,46 @@ const LoginPage = () => {
     const handleMouseUpPassword = (event) => {
         event.preventDefault();
     };
+
+    const loginHandle = async() => {
+        try{
+            console.log(email)
+            const response = await axios.post(Api + 'students/student/login',{
+                email:email,
+                password:password
+            })
+
+            if(response.data.code === 200){
+
+                await Swal.fire({
+                    title: "Login Success !",
+                    icon: "success",
+                    draggable: true,
+                    timer:3000
+                  });
+                navigate('/home');
+            }else{
+                Swal.fire({
+                    title: "Invalid Credential",
+                    icon: "error",
+                    draggable: true,
+                    timer:3000
+                  });
+            }
+            console.log(response)
+        }catch(err){
+            console.error(err);
+            Swal.fire({
+                title: "Somthin Went Wrong",
+                icon: "warning",
+                draggable: true,
+                timer:3000
+              });
+
+        }
+    }
+
+    
     return (
         <Box sx={{
             width: '100%'
@@ -76,30 +121,8 @@ const LoginPage = () => {
                             id="standard-suffix-shrink"
                             label="e-mail"
                             variant="standard"
-                            slotProps={{
-                                htmlInput: {
-                                    sx: { textAlign: 'right' },
-                                },
-                                input: {
-                                    endAdornment: (
-                                        <InputAdornment
-                                            position="end"
-                                            sx={{
-                                                alignSelf: 'flex-end',
-                                                margin: 0,
-                                                marginBottom: '5px',
-                                                opacity: 0,
-                                                pointerEvents: 'none',
-                                                [`[data-shrink=true] ~ .${inputBaseClasses.root} > &`]: {
-                                                    opacity: 1,
-                                                },
-                                            }}
-                                        >
-                                            @gmail.com
-                                        </InputAdornment>
-                                    ),
-                                },
-                            }}
+
+                            onChange={(e)=> setEmail(e.target.value)}
                         />
 
                         <FormControl sx={{ m: 1, width: '100%' }} variant="standard">
@@ -121,6 +144,7 @@ const LoginPage = () => {
                                         </IconButton>
                                     </InputAdornment>
                                 }
+                                onChange={(e) =>setPassword(e.target.value)}
                             />
                         </FormControl>
                     </Box>
@@ -165,7 +189,7 @@ const LoginPage = () => {
                             bgcolor:COLORS.blue1
                         }
                     }}
-                    onClick={()=>navigate('/home')}
+                    onClick={()=>loginHandle()}
                     >
                         Log in
                     </Button>
