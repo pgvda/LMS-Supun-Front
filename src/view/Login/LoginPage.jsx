@@ -37,13 +37,28 @@ const LoginPage = () => {
 
             if(response.data.code === 200){
 
-                await Swal.fire({
-                    title: "Login Success !",
-                    icon: "success",
-                    draggable: true,
-                    timer:3000
-                  });
-                navigate('/home');
+                if(response.data.accountState === 'active'){
+                    await Swal.fire({
+                        title: "Login Success !",
+                        icon: "success",
+                        draggable: true,
+                        timer:3000
+                      });
+                      localStorage.setItem('token', response.data.token);
+                      localStorage.setItem('accountType', response.data.accountType);
+                      localStorage.setItem('id', response.data.studentId);
+                    navigate('/home');
+                }
+                
+                if(response.data.accountState === 'de-active'){
+                    await Swal.fire({
+                        title: "Login Fail !",
+                        icon: "warning",
+                        draggable: true,
+                        text:'you account suspended..! Contact admin'
+                      });
+                }
+
             }else{
                 Swal.fire({
                     title: "Invalid Credential",
