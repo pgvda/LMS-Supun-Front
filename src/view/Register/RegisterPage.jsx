@@ -18,6 +18,7 @@ import COLORS from '../../utils/Colors';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Api from '../../utils/Api';
+import Swal from 'sweetalert2'
 
 const batchsData = ['2024', '2025'];
 const classTypeData = ['Theory', 'Revision', 'Paper'];
@@ -104,10 +105,22 @@ const RegisterPage = () => {
       console.log('Registration successful:', response.data);
 
       if(response.data.code === 200){
+        await Swal.fire({
+          title: "Registration Success",
+          icon: "success",
+          draggable: true,
+          timer:3000
+        });
         navigate('/');
       }
       
     } catch (error) {
+      Swal.fire({
+        title: "Registration Fail",
+        icon: "error",
+        draggable: true,
+        timer:3000
+      });
       console.error('Registration error:', error);
     }
   };
