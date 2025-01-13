@@ -28,6 +28,7 @@ import {
 } from '@mui/icons-material';
 import axios from 'axios';
 import Api from '../utils/Api';
+import Swal from 'sweetalert2';
 
 const ProfilePage = () => {
   const theme = useTheme();
@@ -73,10 +74,40 @@ const ProfilePage = () => {
     setPasswordFields(prev => ({ ...prev, [field]: e.target.value }));
   };
 
-  const handleChangePassword = () => {
-    console.log('Password changed:', passwordFields);
-    alert('Password changed successfully!');
-  };
+
+
+  const handleChangePassword = async() => {
+    try{
+      const response = await axios.put(Api + 'students/student/updatepassword/' + id, {
+        newPassword:passwordFields.newPassword,
+        oldPassword:passwordFields.currentPassword
+      },{
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      console.log(response)
+      const errorMsg = response.data.message
+      console.log(errorMsg)
+      if (response.data.code === 200) {
+        Swal.fire({
+          title: "Password Change Success !",
+          icon: "success",
+          draggable: true,
+          timer: 3000
+        });
+      } else {
+        Swal.fire({
+          title: "Password Change Fail !",
+          text:errorMsg.join(','),
+          icon: "error",
+          draggable: true,
+        });
+      }
+    } catch (err) {
+      console.error(err)
+    }
+  } 
 
   const fetchData = async() => {
     try{
