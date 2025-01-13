@@ -62,8 +62,48 @@ const ProfilePage = () => {
 
   console.log(id)
 
-  const handleEditClick = (field) => {
-    setEditMode(prev => ({ ...prev, [field]: !prev[field] }));
+  const handleEditClick = async(field) => {
+    if(field !== 'batch' && field !== 'classType' && field !== 'email'){
+      setEditMode(prev => ({ ...prev, [field]: !prev[field] }));
+    }
+    if(editMode[field]){
+      try{
+        const response = await axios.put(Api + 'students/student/update/' + id, {
+          name:profileData.name,
+          whatsAppNo:profileData.whatsAppNo,
+          additionalNo:profileData.additionalNo,
+          district:profileData.district,
+          scl:profileData.scl,
+          address:profileData.address
+        },{
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+        console.log(response)
+        const errorMsg = response.data.message
+        console.log(errorMsg)
+        if (response.data.code === 200) {
+          Swal.fire({
+            title: "Updating Success !",
+            icon: "success",
+            draggable: true,
+            timer: 3000
+          });
+        } else {
+          Swal.fire({
+            title: "Updating Fail !",
+            text:errorMsg.join(','),
+            icon: "error",
+            draggable: true,
+          });
+        }
+      } catch (err) {
+        console.error(err)
+      }
+    }
+    
+
   };
 
   const handleChange = (e, field) => {

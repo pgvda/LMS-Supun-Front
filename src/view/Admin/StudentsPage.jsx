@@ -8,7 +8,8 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { Box, Switch, Typography } from '@mui/material';
-import { Label } from '@mui/icons-material';
+import axios from 'axios';
+import Api from '../../utils/Api'
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -30,24 +31,83 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     },
 }));
 
-function createData(name, calories, fat, carbs, protein) {
-    return { name, calories, fat, carbs, protein };
+function createData(name, batch, classType, whatsAppNo,  regNo, state, id) {
+    return { name, batch, classType, whatsAppNo,  regNo, state, id };
 }
 
-const rows = [
-    createData('Vidusha', 2019, 'Revision', '769342644', 'Active'),
-    createData('Vidusha2', 2019, 'Theory', '769342644', 'De-Active'),
-    createData('Vidusha3', 2019, 'Revision', '769342644', 'Active'),
-    createData('Vidusha4', 2019, 'Revision', '769342644', 'Active'),
-    createData('Vidusha5', 2019, 'Revision', '769342644', 'Active'),
-];
+
 
 const StudentsPage = () => {
     const [checked, setChecked] = React.useState(true);
+    const [studentDataList, setStudentDataList] = React.useState([]);
+
+    const id = localStorage.getItem('id');
+    const token = localStorage.getItem('token');
 
     const handleChange = (event) => {
         setChecked(event.target.checked);
     };
+
+    const converTrueFales = (state) => {
+        if(state === 'active'){
+            return true;
+        }
+
+        if(state === 'de-active'){
+            return false;
+        }
+    }
+
+    const fetchStudentList = async () => {
+        try {
+            const response = await axios.get(Api + 'students/student/getallstudents', {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                }
+            })
+
+            if(response.data.code ===200){
+                setStudentDataList(response.data.data);
+                
+            }
+        } catch (err) {
+            console.error(err)
+        }
+    }
+    const rows = studentDataList.map(student =>
+        createData(student.name, student.batch, student.classType, student.whatsAppNo,  student.regNo, student.accountState, student._id)
+    )
+
+
+
+
+    const updateAccountStatus = async (id, newState) => {
+        console.log(id, newState);
+        try {
+            const response = await axios.put(`${Api}students/student/state/update/${id}`, 
+                { state: newState }, 
+                { headers: { 'Authorization': `Bearer ${token}` } }
+            );
+            console.log('state update',response)
+            // fetchStudentList();
+            setStudentDataList(prevState =>
+                prevState.map(student =>
+                    student._id === id ? { ...student, accountState: newState } : student
+                )
+            );
+        } catch (err) {
+            console.error('Failed to update account status', err);
+        }
+    };
+
+    const handleSwitchChange = (id, currentStatus) => {
+        const newState = currentStatus === 'active' ? 'de-active' : 'active';
+        updateAccountStatus(id, newState);
+    };
+
+    React.useEffect(() =>{
+        fetchStudentList();
+    },[token])
 
     return (
         <Box sx={{minHeight:'75vh'}}>
@@ -72,7 +132,7 @@ const StudentsPage = () => {
                                 <StyledTableCell align="right">Batch</StyledTableCell>
                                 <StyledTableCell align="right">ClassType</StyledTableCell>
                                 <StyledTableCell align="right">WhatsApp</StyledTableCell>
-                                <StyledTableCell align="right">State</StyledTableCell>
+                                <StyledTableCell align="right">RegNo</StyledTableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -81,14 +141,14 @@ const StudentsPage = () => {
                                     <StyledTableCell component="th" scope="row">
                                         {row.name}
                                     </StyledTableCell>
-                                    <StyledTableCell align="right">{row.calories}</StyledTableCell>
-                                    <StyledTableCell align="right">{row.fat}</StyledTableCell>
-                                    <StyledTableCell align="right">{row.carbs}</StyledTableCell>
-                                    <StyledTableCell align="right">{row.protein}</StyledTableCell>
+                                    <StyledTableCell align="right">{row.batch}</StyledTableCell>
+                                    <StyledTableCell align="right">{row.classType}</StyledTableCell>
+                                    <StyledTableCell align="right">{row.whatsAppNo}</StyledTableCell>
+                                    <StyledTableCell align="right">{row.regNo}</StyledTableCell>
                                     <StyledTableCell align="right">
                                         <Switch
-                                            checked={checked}
-                                            onChange={handleChange}
+                                            checked={converTrueFales(row.state)}
+                                            onChange={() => handleSwitchChange(row.id, row.state)}
                                             inputProps={{ 'aria-label': 'controlled' }}
                                         />
                                     </StyledTableCell>
