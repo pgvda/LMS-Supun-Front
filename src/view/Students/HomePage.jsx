@@ -18,7 +18,8 @@ const HomePage = () => {
   // Fetch files from the backend
   const fetchFiles = async () => {
     try {
-      const response = await fetch('http://localhost:4000/files'); // Replace with your backend URL
+      const email = 'slawanya31@gmail.com'
+      const response = await fetch(`http://localhost:4000/files?email=${encodeURIComponent(email)}`); 
       if (!response.ok) {
         throw new Error('Failed to fetch files');
       }
@@ -30,6 +31,8 @@ const HomePage = () => {
       setLoading(false);
     }
   };
+  
+  
 
   useEffect(() => {
     fetchFiles();
