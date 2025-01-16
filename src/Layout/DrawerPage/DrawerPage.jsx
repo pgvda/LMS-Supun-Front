@@ -69,6 +69,7 @@ const DrawerPage = (props) => {
     const [selectedTab, setSelecetedTab] = React.useState('Home');
 
     const userName = localStorage.getItem('name');
+    const accountType = localStorage.getItem('accountType');
 
     const navigate = useNavigate()
   
@@ -91,6 +92,10 @@ const DrawerPage = (props) => {
       localStorage.clear();
       navigate('/')
     }
+
+    const filteredMenu = drawerMenu.filter(item => 
+      accountType === 'admin' || item.name === 'Home' || item.name === 'Profile'
+    );
   
     const drawer = (
       <div style={{backgroundColor:COLORS.bgBlue, height:'100%'}}>
@@ -112,7 +117,7 @@ const DrawerPage = (props) => {
         </Toolbar>
         <Divider />
             <List>
-                {drawerMenu.map((text, index) => (
+                {filteredMenu.map((text, index) => (
                     <ListItem key={text} >
                         <ListItemButton
                             sx={{

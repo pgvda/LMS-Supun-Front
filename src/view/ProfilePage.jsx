@@ -29,6 +29,7 @@ import {
 import axios from 'axios';
 import Api from '../utils/Api';
 import Swal from 'sweetalert2';
+import { BlueButton } from '../utils/CommonStyle';
 
 const ProfilePage = () => {
   const theme = useTheme();
@@ -56,9 +57,11 @@ const ProfilePage = () => {
   });
 
   const [editMode, setEditMode] = useState({});
+  const [folderName, setFolderName] = useState('');
 
   const id = localStorage.getItem('id');
   const token = localStorage.getItem('token');
+  const accountType = localStorage.getItem('accountType');
 
   console.log(id)
 
@@ -185,6 +188,40 @@ const ProfilePage = () => {
     }
   }
 
+  const handleAddFolder = async() => {
+   
+    try{
+      const response = await axios.post(Api + 'folders/create/folder',{
+        folderName:folderName
+      },{
+        headers:{
+          Authorization: `Bearer ${token}`
+        }
+      })
+
+      console.log(response);
+      const errorMsg = response.data.message
+      if (response.data.code === 200) {
+        setFolderName('');
+        Swal.fire({
+          title: "Folder Created .!",
+          icon: "success",
+          draggable: true,
+          timer: 3000
+        });
+      } else {
+        Swal.fire({
+          title: "Fail with Create Folder !",
+          text:errorMsg.join(','),
+          icon: "error",
+          draggable: true,
+        });
+      }
+    }catch(err){
+      console.error(err)
+    }
+  }
+
   useEffect(()=>{
     fetchData();
   },[id])
@@ -223,10 +260,10 @@ const ProfilePage = () => {
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
       <Grid container spacing={3}>
-        {/* Left Side - Profile Info */}
+
         <Grid item xs={12} md={4}>
           <Stack spacing={3}>
-            {/* Profile Card */}
+  
             <Paper elevation={3} sx={{ p: 3, textAlign: 'center' }}>
               <Box sx={{ position: 'relative', display: 'inline-block' }}>
                 <Badge
@@ -278,7 +315,7 @@ const ProfilePage = () => {
               </Paper>
             </Paper>
 
-            {/* Password Change Card */}
+
             <Paper elevation={3} sx={{ p: 3 }}>
               <Typography variant="h6" gutterBottom>
                 Change Password
@@ -308,10 +345,19 @@ const ProfilePage = () => {
                 </Button>
               </Stack>
             </Paper>
+            {accountType === 'admin' && (
+              <Box>
+               
+                <TextField id="outlined-basic" label="Folder Name" variant="outlined" sx={{width:'100%', my:1}} 
+                onChange={(e) => setFolderName(e.target.value)}
+                />
+                <BlueButton onClick={handleAddFolder}>Add Folder</BlueButton>
+              </Box>
+            )}
           </Stack>
         </Grid>
 
-        {/* Right Side - Details */}
+  
         <Grid item xs={12} md={8}>
           <Paper elevation={3} sx={{ p: 3 }}>
             <Typography variant="h6" gutterBottom>

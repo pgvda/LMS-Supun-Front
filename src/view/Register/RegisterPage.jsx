@@ -1,18 +1,5 @@
-import { 
-  Box, 
-  FormControl, 
-  InputLabel, 
-  MenuItem, 
-  Select, 
-  TextField, 
-  Typography, 
-  Button, 
-  Grid, 
-  Stack,
-  FormControlLabel,
-  Checkbox
-} from '@mui/material';
-import React, { useState } from 'react';
+import { Box, FormControl, InputLabel, MenuItem, Select, TextField, Typography, Button, Grid, Stack,FormControlLabel,Checkbox} from '@mui/material';
+import React, { useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import COLORS from '../../utils/Colors';
 import { useNavigate } from 'react-router-dom';
@@ -43,6 +30,7 @@ const RegisterPage = () => {
     batch:'',
     classType:''
   });
+  const [classTypes, setClassTypes] = useState([]);
 
   const navigate = useNavigate();
 
@@ -124,6 +112,24 @@ const RegisterPage = () => {
       console.error('Registration error:', error);
     }
   };
+
+  const fetchClassType = async() =>{
+    try{
+      const response = await axios.get(Api + 'folders/folder-names')
+
+      console.log(response)
+
+      if(response.data.code === 200){
+        setClassTypes(response.data.data)
+      }
+    }catch(err){
+      console.error(err)
+    }
+  }
+
+  useEffect(()=>{
+    fetchClassType();
+  },[])
 
   return (
     <Box
@@ -270,7 +276,7 @@ const RegisterPage = () => {
                   label="Class Type"
                   name="classType"
                 >
-                  {classTypeData.map((data, index) => (
+                  {classTypes.map((data, index) => (
                     <MenuItem key={index} value={data}>
                       {data}
                     </MenuItem>
