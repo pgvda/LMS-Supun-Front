@@ -68,6 +68,8 @@ const DrawerPage = (props) => {
     const [isClosing, setIsClosing] = React.useState(false);
     const [selectedTab, setSelecetedTab] = React.useState('Home');
 
+    const userName = localStorage.getItem('name');
+
     const navigate = useNavigate()
   
     const handleDrawerClose = () => {
@@ -105,7 +107,7 @@ const DrawerPage = (props) => {
                 px:2
             }}>
                 <Avatar src={profile} sx={{width:{xs:'20px',md:'60px'},height:{xs:'20px',md:'60px'}}}/>
-                <Typography sx={{color:COLORS.white,fontSize:{xs:'20px',md:'24px'}}}>Hi,Alex</Typography>
+                <Typography sx={{color:COLORS.white,fontSize:{xs:'20px',md:'24px'}}}>Hi {userName}</Typography>
             </Box>
         </Toolbar>
         <Divider />

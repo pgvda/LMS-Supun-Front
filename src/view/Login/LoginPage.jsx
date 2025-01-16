@@ -47,6 +47,8 @@ const LoginPage = () => {
                       localStorage.setItem('token', response.data.token);
                       localStorage.setItem('accountType', response.data.accountType);
                       localStorage.setItem('id', response.data.studentId);
+                      localStorage.setItem('email', response.data.email)
+                      localStorage.setItem('name', response.data.name)
                     navigate('/home');
                 }
                 
