@@ -30,6 +30,7 @@ import axios from 'axios';
 import Api from '../utils/Api';
 import Swal from 'sweetalert2';
 import { BlueButton } from '../utils/CommonStyle';
+import AdditionalAccessModel from '../components/profile/AdditionalAccessModel';
 
 const ProfilePage = () => {
   const theme = useTheme();
@@ -58,6 +59,7 @@ const ProfilePage = () => {
 
   const [editMode, setEditMode] = useState({});
   const [folderName, setFolderName] = useState('');
+  const [open, setOpen] = useState(false);
 
   const id = localStorage.getItem('id');
   const token = localStorage.getItem('token');
@@ -222,6 +224,14 @@ const ProfilePage = () => {
     }
   }
 
+  const handleModel = () => {
+    setOpen(true);
+  }
+
+  const handleClose = () => {
+    setOpen(false);
+  }
+
   useEffect(()=>{
     fetchData();
   },[id])
@@ -349,9 +359,10 @@ const ProfilePage = () => {
               <Box>
                
                 <TextField id="outlined-basic" label="Folder Name" variant="outlined" sx={{width:'100%', my:1}} 
-                onChange={(e) => setFolderName(e.target.value)}
+                onChange={(e) => setFolderName(e.target.value)} value={folderName}
                 />
                 <BlueButton onClick={handleAddFolder}>Add Folder</BlueButton>
+                <BlueButton onClick={handleModel} sx={{mt:1}}>Addintional Access</BlueButton>
               </Box>
             )}
           </Stack>
@@ -405,6 +416,7 @@ const ProfilePage = () => {
           </Paper>
         </Grid>
       </Grid>
+      <AdditionalAccessModel open={open} handleClose={handleClose}/>
     </Container>
   );
 };

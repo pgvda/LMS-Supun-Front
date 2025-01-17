@@ -13,6 +13,7 @@ const classTypeData = ['Theory', 'Revision', 'Paper'];
 const RegisterPage = () => {
   const [batch, setBatch] = useState('');
   const [classType, setClassType] = useState('');
+  const [className, setClassName] = useState('');
   const [isPressNext, setIsPressNext] = useState(false);
   const [registerData, setRegisterData] = useState({
     name: '',
@@ -28,7 +29,8 @@ const RegisterPage = () => {
     europeHistory: false,
     historyType:'',
     batch:'',
-    classType:''
+    classType:'',
+    className:''
   });
   const [classTypes, setClassTypes] = useState([]);
 
@@ -51,6 +53,16 @@ const RegisterPage = () => {
       classType:newClassType
     }))
   };
+
+  const handleClassNameChange = (event) => {
+    const newClassName = event.target.value;
+    setClassName(newClassName);
+    setRegisterData((prev) => ({
+      ...prev,
+      className:newClassName
+    }))
+  };
+  
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -276,6 +288,25 @@ const RegisterPage = () => {
                   label="Class Type"
                   name="classType"
                 >
+                  {classTypeData.map((data, index) => (
+                    <MenuItem key={index} value={data}>
+                      {data}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth size="small">
+                <InputLabel id="class-select-label">Class</InputLabel>
+                <Select
+                  labelId="class-select-label"
+                  value={className}
+                  onChange={handleClassNameChange}
+                  label="Class"
+                  name="className"
+                >
                   {classTypes.map((data, index) => (
                     <MenuItem key={index} value={data}>
                       {data}
@@ -283,6 +314,7 @@ const RegisterPage = () => {
                   ))}
                 </Select>
               </FormControl>
+              
             </Grid>
             <Grid item xs={12} sm={6}>
               <Button
