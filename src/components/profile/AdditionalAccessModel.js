@@ -1,12 +1,13 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
-import { styled, css } from '@mui/system';
+import { styled, css, width} from '@mui/system';
 import { Modal as BaseModal } from '@mui/base/Modal';
-import { FormControl, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material';
+import { FormControl, IconButton, InputLabel, MenuItem, Select, TextField, Typography ,Box} from '@mui/material';
 import axios from 'axios';
 import Api from '../../utils/Api';
 import { BlueButton } from '../../utils/CommonStyle';
+import CloseIcon from '@mui/icons-material/Close';
 
 const AdditionalAccessModel = ({ open, handleClose }) => {
     const [classTypes, setClassTypes] = React.useState([]);
@@ -41,6 +42,10 @@ const AdditionalAccessModel = ({ open, handleClose }) => {
             })
 
             console.log(response);
+
+            if(response.data.code === 200){
+                handleClose();
+            }
         }catch(err){
             console.error(err)
         }
@@ -65,6 +70,11 @@ const AdditionalAccessModel = ({ open, handleClose }) => {
             keepMounted
         >
             <ModalContent sx={{ width: 400 }}>
+                <Box sx={{width:'100%', display:'flex', justifyContent:'end'}}>
+                    <IconButton onClick={handleClose}>
+                        <CloseIcon/>
+                    </IconButton>
+                </Box>
                 <Typography sx={{ fontSize: { xs: 'auto', md: '20', fontWeight: 700, textAlign: 'center' } }}>Give Additional Access</Typography>
                 <TextField size='small' id="outlined-basic" label="Email" variant="outlined" sx={{ width: '100%', my: 2 }}
                     onChange={(e) => setEmail(e.target.value)}
