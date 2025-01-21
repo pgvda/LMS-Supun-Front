@@ -41,7 +41,7 @@ const StudentsPage = () => {
     const [checked, setChecked] = React.useState(true);
     const [studentDataList, setStudentDataList] = React.useState([]);
 
-    const id = localStorage.getItem('id');
+    const logingId = localStorage.getItem('id');
     const token = localStorage.getItem('token');
 
     const handleChange = (event) => {
@@ -63,6 +63,7 @@ const StudentsPage = () => {
             const response = await axios.get(Api + 'students/student/getallstudents', {
                 headers: {
                     'Authorization': `Bearer ${token}`,
+                    'admin_id':logingId
                 }
             })
 
@@ -86,7 +87,10 @@ const StudentsPage = () => {
         try {
             const response = await axios.put(`${Api}students/student/state/update/${id}`, 
                 { state: newState }, 
-                { headers: { 'Authorization': `Bearer ${token}` } }
+                { headers: { 
+                    'Authorization': `Bearer ${token}` ,
+                    'admin_id':logingId
+                } }
             );
             console.log('state update',response)
             // fetchStudentList();

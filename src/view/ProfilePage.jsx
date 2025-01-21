@@ -197,7 +197,8 @@ const ProfilePage = () => {
         folderName:folderName
       },{
         headers:{
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
+          'admin_id':id
         }
       })
 
@@ -416,7 +417,7 @@ const ProfilePage = () => {
           </Paper>
         </Grid>
       </Grid>
-      <AdditionalAccessModel open={open} handleClose={handleClose}/>
+      <AdditionalAccessModel open={open} handleClose={handleClose} id={id}/>
     </Container>
   );
 };

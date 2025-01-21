@@ -9,13 +9,13 @@ import Api from '../../utils/Api';
 import { BlueButton } from '../../utils/CommonStyle';
 import CloseIcon from '@mui/icons-material/Close';
 
-const AdditionalAccessModel = ({ open, handleClose }) => {
+const AdditionalAccessModel = ({ open, handleClose, id}) => {
     const [classTypes, setClassTypes] = React.useState([]);
     const [email, setEmail] = React.useState('');
     const [className, setClassName] = React.useState('');
 
     const token = localStorage.getItem('token');
-
+    console.log(id);
     const fetchClassType = async () => {
         try {
             const response = await axios.get(Api + 'folders/folder-names')
@@ -37,7 +37,8 @@ const AdditionalAccessModel = ({ open, handleClose }) => {
                 className:className
             },{
                 headers:{
-                    Authorization:`Bearer ${token}`
+                    Authorization:`Bearer ${token}`,
+                    'admin_id':id
                 }
             })
 

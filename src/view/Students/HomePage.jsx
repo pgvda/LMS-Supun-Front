@@ -53,6 +53,8 @@ const HomePage = () => {
     }
   };
 
+
+
   useEffect(() => {
     fetchFiles();
   }, []);
@@ -110,9 +112,13 @@ const HomePage = () => {
           <Button
             variant="contained"
             fullWidth
-            href={`https://drive.google.com/file/d/${file.id}/view`}
+            onClick={() => {
+              const encodedId = btoa(file.id); 
+              window.open(`http://localhost:4000/api/secure-folders/secure-file?id=${encodedId}`, '_blank');
+            }}
             target="_blank"
             rel="noopener noreferrer"
+           
             sx={{
               textTransform: 'none',
               py: 1,
