@@ -29,9 +29,9 @@ jobs:
             mkdir -p apps/lms/frontend && cd apps/lms/frontend
             if [ -d ".git" ]; then
               git stash
-              git pull origin deploy
+              git pull origin main
             else
-              git clone -b deploy https://github.com/pgvda/LMS-Supun-Front.git .
+              git clone -b main https://github.com/pgvda/LMS-Supun-Front.git .
             fi
             
             # Install dependencies
