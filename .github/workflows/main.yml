@@ -2,7 +2,6 @@ name: Deploy FrontEnd
 on:
   push:
     branches:
-      - deploy
       - main
 jobs:
   deploy:
