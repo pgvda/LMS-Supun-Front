@@ -29,14 +29,16 @@ jobs:
             
             mkdir -p apps/lms/frontend && cd apps/lms/frontend
             if [ -d ".git" ]; then
-              git stash
+              git reset --hard origin/deploy
               git pull origin deploy
             else
+             rm -rf *
               git clone -b deploy https://github.com/pgvda/LMS-Supun-Front.git .
             fi
             
             # Install dependencies
-            npm install --force
+            rm -rf node_modules package-lock.json
+            npm install
             npm run build
             
             # Check if PM2 process exists
