@@ -102,7 +102,7 @@ const RegisterPage = () => {
     try {
       console.log(registerData);
       const response = await axios.post(Api + 'students/student/register', registerData);
-      console.log('Registration successful:', response.data);
+    
 
       if(response.data.code === 200){
         await Swal.fire({
@@ -129,7 +129,7 @@ const RegisterPage = () => {
     try{
       const response = await axios.get(Api + 'folders/folder-names')
 
-      console.log(response)
+
 
       if(response.data.code === 200){
         setClassTypes(response.data.data)
