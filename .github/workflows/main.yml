@@ -2,11 +2,11 @@ name: Deploy FrontEnd
 on:
   push:
     branches:
-      - main
       - deploy
+      - main
 jobs:
   deploy:
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/deploy'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -30,9 +30,9 @@ jobs:
             mkdir -p apps/lms/frontend && cd apps/lms/frontend
             if [ -d ".git" ]; then
               git stash
-              git pull origin main
+              git pull origin deploy
             else
-              git clone -b main https://github.com/pgvda/LMS-Supun-Front.git .
+              git clone -b deploy https://github.com/pgvda/LMS-Supun-Front.git .
             fi
             
             # Install dependencies
