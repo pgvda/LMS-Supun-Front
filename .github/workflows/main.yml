@@ -32,22 +32,20 @@ jobs:
               git stash
               git pull origin deploy
             else
-              git clone -b deploy https://github.com/pgvda/VRMS-front.git .
+              git clone -b deploy https://github.com/pgvda/LMS-Supun-Front.git .
             fi
             
             # Install dependencies
             npm install --force
+            npm run build
             
             # Check if PM2 process exists
             if pm2 list | grep -q "lms-frontend"; then
-              echo "Reloading existing PM2 process"
-              pm2 reload lms-frontend
-            else
-              echo "Starting new PM2 process"
-              pm2 start server.js --name "lms-frontend"
+              pm2 delete lms-frontend
             fi
             
-            # Save PM2 process list
+            pm2 serve build 3000 --name "lms-frontend" --spa  # Serve React App
+            
             pm2 save
             
             echo "Deployment completed successfully"
