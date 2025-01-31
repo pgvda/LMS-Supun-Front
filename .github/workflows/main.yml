@@ -1,5 +1,4 @@
 name: Deploy Frontend
-
 on:
   push:
     branches:
@@ -7,7 +6,7 @@ on:
       - main
 
 jobs:
-  deploy_qa:
+  deploy:
     if: github.ref == 'refs/heads/deploy'
     runs-on: ubuntu-latest
     steps:
@@ -22,26 +21,48 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
+            # Load environment variables and PATH
+            source ~/.bashrc
+            source ~/.profile
+
+            # Ensure NVM is available if needed
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            
+            # Navigate to the frontend directory
             mkdir -p apps/lms/frontend && cd apps/lms/frontend
             
+            # Pull latest changes from the deploy branch or clone if needed
             if [ -d ".git" ]; then
               git stash
               git pull origin deploy
             else
               git clone -b deploy https://github.com/pgvda/LMS-Supun-Front.git .
             fi
-            
+
+            # Install dependencies using npm or yarn
             npm install --force
+            
+            # Build the React app
             npm run build
 
-            pid=$(pm2 pid "lms-frontend" 2>/dev/null)
-            if [ -n "$pid" ]; then
-              echo "Reloading application"
-              pm2 reload "lms-frontend"
-              pm2 save
-            else
-              echo "New application"
-              pm2 start npm --name "lms-frontend" -- start
-              pm2 startup
-              pm2 save
+            # Install PM2 if not installed
+            if ! command -v pm2 &> /dev/null
+            then
+              echo "PM2 not found, installing..."
+              npm install pm2 -g
             fi
+
+            # Check if PM2 process for React app already exists
+            if pm2 list | grep -q "lms-frontend"; then
+              echo "Reloading existing PM2 process"
+              pm2 reload "lms-frontend"
+            else
+              echo "Starting new PM2 process"
+              pm2 serve build --name "lms-frontend" --port 3000 --spa
+            fi
+            
+            # Save PM2 process list
+            pm2 save
+            
+            echo "Frontend deployment completed successfully"
