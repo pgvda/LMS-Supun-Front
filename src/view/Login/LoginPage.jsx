@@ -69,7 +69,7 @@ const LoginPage = () => {
                     timer:3000
                   });
             }
-            console.log(response)
+            
         }catch(err){
             console.error(err);
             Swal.fire({

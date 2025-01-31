@@ -10,7 +10,7 @@ import ForgotPasswordPage from './view/ForgotPassword/ForgotPasswordPage';
 import Footer from './Layout/Footer/Footer';
 import ProfilePage from './view/ProfilePage';
 
-// Layout Component for DrawerPage Routes
+
 function DrawerLayout() {
   return (
     <>
