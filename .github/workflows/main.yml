@@ -4,7 +4,6 @@ on:
     branches:
       - deploy
       - main
-
 jobs:
   deploy:
     if: github.ref == 'refs/heads/deploy'
@@ -12,7 +11,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
       - name: Connect with VPS
         uses: appleboy/ssh-action@master
         with:
@@ -24,45 +22,33 @@ jobs:
             # Load environment variables and PATH
             source ~/.bashrc
             source ~/.profile
-
-            # Ensure NVM is available if needed
+            
+            # If using NVM, initialize it
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             
-            # Navigate to the frontend directory
             mkdir -p apps/lms/frontend && cd apps/lms/frontend
-            
-            # Pull latest changes from the deploy branch or clone if needed
             if [ -d ".git" ]; then
               git stash
               git pull origin deploy
             else
               git clone -b deploy https://github.com/pgvda/LMS-Supun-Front.git .
             fi
-
-            # Install dependencies using npm or yarn
-            npm install --force
             
-            # Build the React app
+            # Install dependencies
+            npm install --force
             npm run build
-
-            # Install PM2 if not installed
-            if ! command -v pm2 &> /dev/null
-            then
-              echo "PM2 not found, installing..."
-              npm install pm2 -g
-            fi
-
-            # Check if PM2 process for React app already exists
+            
+            # Check if PM2 process exists
             if pm2 list | grep -q "lms-frontend"; then
               echo "Reloading existing PM2 process"
-              pm2 reload "lms-frontend"
+              pm2 reload lms-backend
             else
               echo "Starting new PM2 process"
-              pm2 serve build --name "lms-frontend" --port 3000 --spa
+              pm2 start server.js --name "lms-frontend"
             fi
             
             # Save PM2 process list
             pm2 save
             
-            echo "Frontend deployment completed successfully"
+            echo "Deployment completed successfully"
