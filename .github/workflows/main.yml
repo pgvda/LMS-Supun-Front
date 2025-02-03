@@ -1,11 +1,9 @@
 name: Deploy Frontend
-
 on:
   push:
     branches:
       - deploy
       - main
-
 jobs:
   deploy:
     if: github.ref == 'refs/heads/deploy'
@@ -13,8 +11,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
-      - name: Connect with VPS and Deploy
+      - name: Connect with VPS
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
@@ -22,46 +19,30 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
+            # Load environment variables and PATH
             source ~/.bashrc
             source ~/.profile
+            
+            # If using NVM, initialize it
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-
+            
             mkdir -p apps/lms/frontend && cd apps/lms/frontend
-
             if [ -d ".git" ]; then
-              git reset --hard
+              git stash
               git pull origin deploy
             else
               git clone -b deploy https://github.com/pgvda/LMS-Supun-Front.git .
             fi
-
-            npm install --legacy-peer-deps
-
-            export NODE_OPTIONS="--max-old-space-size=4096"
-            npm run build  # This will generate the build files
-
-            echo "✅ Build completed! No server started."
-
-      - name: Start Frontend Server
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.PRIVATE_KEY }}
-          port: ${{ secrets.SSH_PORT }}
-          script: |
-            cd apps/lms/frontend
-
-            if ! command -v serve &> /dev/null; then
-              npm install -g serve
-            fi
-
-            # Stop any existing frontend process if running
-            pm2 delete lms-frontend || true
-
-            # Start the frontend server using 'serve'
-            pm2 start "serve -s build -l 3000" --name "lms-frontend"
+            
+            # Install dependencies
+            npm install --force
+            npm run build
+            
+            # Start the server using PM2
+            pm2 start npm --name "lms-frontend" -- start
+            
+            # Save PM2 process list
             pm2 save
-
-            echo "🚀 Frontend server started on port 3000!"
+            
+            echo "Deployment completed successfully"
