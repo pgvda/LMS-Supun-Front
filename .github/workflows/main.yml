@@ -43,10 +43,6 @@ jobs:
             # Install dependencies
             npm install --force
 
-            # Allocate more memory for build
-            export NODE_OPTIONS="--max-old-space-size=4096"
-            npm run build
-
             # Install 'serve' for serving the frontend
             npm install -g serve
 
@@ -55,7 +51,7 @@ jobs:
               pm2 delete lms-frontend
             fi
 
-            pm2 start "serve -s build -l 3000" --name "lms-frontend"
+            pm2 start "npm run build" --name "lms-frontend"
             pm2 save
 
             echo "Frontend deployment completed successfully"
