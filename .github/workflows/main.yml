@@ -1,17 +1,21 @@
 name: Deploy Frontend
+
 on:
   push:
     branches:
       - deploy
       - main
+
 jobs:
   deploy:
     if: github.ref == 'refs/heads/deploy'
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Connect with VPS
+
+      - name: Connect with VPS and Deploy
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
@@ -19,36 +23,39 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            # Load environment variables and PATH
+            # Load environment variables
             source ~/.bashrc
             source ~/.profile
-            
-            # If using NVM, initialize it
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            
+
+            # Navigate to the frontend directory
             mkdir -p apps/lms/frontend && cd apps/lms/frontend
+
+            # Pull latest changes
             if [ -d ".git" ]; then
               git stash
               git pull origin deploy
             else
               git clone -b deploy https://github.com/pgvda/LMS-Supun-Front.git .
             fi
-            
+
             # Install dependencies
             npm install --force
+
+            # Allocate more memory for build
+            export NODE_OPTIONS="--max-old-space-size=4096"
             npm run build
-            
-            # Check if PM2 process exists
+
+            # Install 'serve' for serving the frontend
+            npm install -g serve
+
+            # Restart frontend with PM2
             if pm2 list | grep -q "lms-frontend"; then
-              echo "Reloading existing PM2 process"
-              pm2 reload lms-backend
-            else
-              echo "Starting new PM2 process"
-              pm2 start server.js --name "lms-frontend"
+              pm2 delete lms-frontend
             fi
-            
-            # Save PM2 process list
+
+            pm2 start "serve -s build -l 3000" --name "lms-frontend"
             pm2 save
-            
-            echo "Deployment completed successfully"
+
+            echo "Frontend deployment completed successfully"
