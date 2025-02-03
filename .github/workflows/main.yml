@@ -10,7 +10,6 @@ jobs:
   deploy:
     if: github.ref == 'refs/heads/deploy'
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -23,35 +22,46 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            # Load environment variables
             source ~/.bashrc
             source ~/.profile
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 
-            # Navigate to the frontend directory
             mkdir -p apps/lms/frontend && cd apps/lms/frontend
 
-            # Pull latest changes
             if [ -d ".git" ]; then
-              git stash
+              git reset --hard
               git pull origin deploy
             else
               git clone -b deploy https://github.com/pgvda/LMS-Supun-Front.git .
             fi
 
-            # Install dependencies
-            npm install --force
+            npm install --legacy-peer-deps
 
-            # Install 'serve' for serving the frontend
-            npm install -g serve
+            export NODE_OPTIONS="--max-old-space-size=4096"
+            npm run build  # This will generate the build files
 
-            # Restart frontend with PM2
-            if pm2 list | grep -q "lms-frontend"; then
-              pm2 delete lms-frontend
+            echo "✅ Build completed! No server started."
+
+      - name: Start Frontend Server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            cd apps/lms/frontend
+
+            if ! command -v serve &> /dev/null; then
+              npm install -g serve
             fi
 
-            pm2 start "npm run build" --name "lms-frontend"
+            # Stop any existing frontend process if running
+            pm2 delete lms-frontend || true
+
+            # Start the frontend server using 'serve'
+            pm2 start "serve -s build -l 3000" --name "lms-frontend"
             pm2 save
 
-            echo "Frontend deployment completed successfully"
+            echo "🚀 Frontend server started on port 3000!"
