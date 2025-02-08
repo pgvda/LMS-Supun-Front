@@ -50,19 +50,21 @@ jobs:
             # If using NVM, initialize it
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+            npm install -g serve
             
             # Setup application
             cd ~/apps/lms/frontend
             
+            # Stop existing PM2 process if it exists
             if pm2 list | grep -q "lms-frontend"; then
-              echo "Reloading existing PM2 process"
-              pm2 reload lms-frontend
-            else
-              echo "Starting new PM2 process"
-              pm2 start npm --name "lms-frontend" -- start
-              pm2 startup
-              pm2 save
+              echo "Deleting existing PM2 process"
+              pm2 delete lms-frontend
             fi
+
+            # Start a new PM2 process with serve
+            echo "Starting new PM2 process"
+            pm2 start serve --name "lms-frontend" -- -s build -l 3000
             
             # Save PM2 process list
             pm2 save
