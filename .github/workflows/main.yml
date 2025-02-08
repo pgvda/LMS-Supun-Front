@@ -10,18 +10,19 @@ jobs:
   deploy:
     if: github.ref == 'refs/heads/deploy'
     runs-on: ubuntu-latest
-
     steps:
-      - name: 🚀 Checkout code
+      - name: 🚀 Checkout Code
         uses: actions/checkout@v2
 
-      - name: 🔑 Connect with VPS & Deploy
+      - name: 🔑 Connect to VPS & Deploy
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
+          script_stop: true
+          timeout: 600s  # Increase timeout to 10 minutes
           script: |
             echo "🔄 Loading environment variables..."
             source ~/.bashrc
@@ -46,7 +47,7 @@ jobs:
             echo "📦 Installing dependencies..."
             npm install --force
 
-            echo "🛠️ Building project..."
+            echo "🛠️ Building project... (This may take a while)"
             npm run build
 
             echo "🚀 Installing Serve & PM2..."
