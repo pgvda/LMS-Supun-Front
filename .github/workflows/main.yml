@@ -50,6 +50,14 @@ jobs:
             # If using NVM, initialize it
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+            # Use Node.js 18
+            nvm install 18
+            nvm use 18
+
+            # Allow port 3000 in firewall
+            sudo ufw allow 3000/tcp
+            sudo systemctl restart ufw
             
             # Setup application
             cd ~/apps/lms/frontend
@@ -59,7 +67,7 @@ jobs:
               pm2 reload lms-frontend
             else
               echo "Starting new PM2 process"
-              pm2 start serve --name "lms-frontend" -- -s build -l 3000
+              pm2 start --name "lms-frontend" -- npx serve -s build -l 3000
             fi
             
             # Save PM2 process list
