@@ -1,17 +1,21 @@
 name: Deploy Frontend
+
 on:
   push:
     branches:
       - deploy
       - main
+
 jobs:
   deploy:
     if: github.ref == 'refs/heads/deploy'
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout code
+      - name: 🚀 Checkout code
         uses: actions/checkout@v2
-      - name: Connect with VPS
+
+      - name: 🔑 Connect with VPS & Deploy
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
@@ -19,30 +23,38 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            # Load environment variables and PATH
+            echo "🔄 Loading environment variables..."
             source ~/.bashrc
             source ~/.profile
-            
-            # If using NVM, initialize it
+
+            echo "💾 Initializing NVM (if used)..."
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            
-            mkdir -p apps/lms/frontend && cd apps/lms/frontend
+
+            echo "📂 Setting up project directory..."
+            mkdir -p ~/apps/lms/frontend && cd ~/apps/lms/frontend
+
             if [ -d ".git" ]; then
-              git stash
-              git pull origin deploy
+              echo "🔄 Updating existing repository..."
+              git reset --hard HEAD
+              git pull origin deploy --rebase
             else
+              echo "📥 Cloning repository for the first time..."
               git clone -b deploy https://github.com/pgvda/LMS-Supun-Front.git .
             fi
-            
-            # Install dependencies
+
+            echo "📦 Installing dependencies..."
             npm install --force
+
+            echo "🛠️ Building project..."
             npm run build
-            
-            # Start the server using PM2
-            pm2 start npm --name "lms-frontend" -- start
-            
-            # Save PM2 process list
+
+            echo "🚀 Installing Serve & PM2..."
+            npm install -g serve pm2
+
+            echo "💡 Restarting PM2 service..."
+            pm2 delete lms-frontend || true
+            pm2 start serve --name "lms-frontend" -- -s build -l 3000
             pm2 save
-            
-            echo "Deployment completed successfully"
+
+            echo "✅ Deployment completed successfully!"
