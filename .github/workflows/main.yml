@@ -10,9 +10,26 @@ jobs:
   deploy:
     if: github.ref == 'refs/heads/deploy'
     runs-on: ubuntu-latest
+    
     steps:
       - name: 🚀 Checkout Code
         uses: actions/checkout@v2
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: 💾 Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: |
+            **/node_modules
+            ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
       - name: 🔑 Connect to VPS & Deploy
         uses: appleboy/ssh-action@master
@@ -22,40 +39,50 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script_stop: true
-          timeout: 600s  # Increase timeout to 10 minutes
+          command_timeout: 20m
           script: |
-            echo "🔄 Loading environment variables..."
+            # Load environment
             source ~/.bashrc
             source ~/.profile
-
-            echo "💾 Initializing NVM (if used)..."
+            
+            # Setup NVM
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-
-            echo "📂 Setting up project directory..."
-            mkdir -p ~/apps/lms/frontend && cd ~/apps/lms/frontend
-
+            
+            # Set Node.js version
+            nvm use 18 || nvm install 18
+            
+            # Setup project directory
+            APP_DIR=~/apps/lms/frontend
+            mkdir -p $APP_DIR
+            cd $APP_DIR
+            
+            # Repository management
             if [ -d ".git" ]; then
-              echo "🔄 Updating existing repository..."
-              git reset --hard HEAD
-              git pull origin deploy --rebase
+              echo "🔄 Updating repository..."
+              git fetch origin deploy
+              git reset --hard origin/deploy
             else
-              echo "📥 Cloning repository for the first time..."
+              echo "📥 Cloning repository..."
               git clone -b deploy https://github.com/pgvda/LMS-Supun-Front.git .
             fi
-
+            
+            # Clean install and build
+            echo "🧹 Cleaning previous build..."
+            rm -rf node_modules build
+            
             echo "📦 Installing dependencies..."
-            npm install --force
-
-            echo "🛠️ Building project... (This may take a while)"
-            npm run build
-
-            echo "🚀 Installing Serve & PM2..."
+            npm clean-install --prefer-offline
+            
+            echo "🛠️ Building project..."
+            NODE_OPTIONS="--max-old-space-size=4096" npm run build
+            
+            echo "🚀 Setting up PM2..."
             npm install -g serve pm2
-
-            echo "💡 Restarting PM2 service..."
-            pm2 delete lms-frontend || true
+            
+            echo "💡 Restarting service..."
+            pm2 delete lms-frontend 2>/dev/null || true
             pm2 start serve --name "lms-frontend" -- -s build -l 3000
             pm2 save
-
-            echo "✅ Deployment completed successfully!"
+            
+            echo "✅ Deployment complete!"
