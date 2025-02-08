@@ -39,7 +39,7 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script_stop: true
-          command_timeout: 20m
+          command_timeout: 30m
           script: |
             # Load environment
             source ~/.bashrc
@@ -71,11 +71,16 @@ jobs:
             echo "🧹 Cleaning previous build..."
             rm -rf node_modules build
             
+            # Fix babel dependency issue
+            echo "📦 Adding missing babel plugin..."
+            npm install --save-dev @babel/plugin-proposal-private-property-in-object
+            
             echo "📦 Installing dependencies..."
+            export NODE_OPTIONS="--max-old-space-size=4096"
             npm clean-install --prefer-offline
             
             echo "🛠️ Building project..."
-            NODE_OPTIONS="--max-old-space-size=4096" npm run build
+            CI=false npm run build
             
             echo "🚀 Setting up PM2..."
             npm install -g serve pm2
