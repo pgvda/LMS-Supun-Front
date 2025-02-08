@@ -38,7 +38,7 @@ jobs:
           source: "build/"
           target: "~/apps/lms/frontend/"
 
-      - name: 🚀 Setup on VPS
+      - name: 🔧 Setup VPS Environment
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
@@ -46,8 +46,29 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
+            # Install Node.js and npm if not present
+            if ! command -v node &> /dev/null; then
+              echo "Installing Node.js..."
+              curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+              sudo apt-get install -y nodejs
+            fi
+            
+            # Install PM2 globally if not present
+            if ! command -v pm2 &> /dev/null; then
+              echo "Installing PM2..."
+              sudo npm install -g pm2
+            fi
+            
+            # Install serve globally if not present
+            if ! command -v serve &> /dev/null; then
+              echo "Installing serve..."
+              sudo npm install -g serve
+            fi
+            
+            # Setup application
             cd ~/apps/lms/frontend
-            npm install -g serve pm2
             pm2 delete lms-frontend 2>/dev/null || true
             pm2 start serve --name "lms-frontend" -- -s build -l 3000
             pm2 save
+            
+            echo "✅ Deployment complete!"
