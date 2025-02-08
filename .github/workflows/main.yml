@@ -7,7 +7,7 @@ on:
       - main
 
 jobs:
-  deploy:
+  build-and-deploy:
     if: github.ref == 'refs/heads/deploy'
     runs-on: ubuntu-latest
     
@@ -19,75 +19,35 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '18'
-          cache: 'npm'
 
-      - name: 💾 Cache dependencies
-        uses: actions/cache@v2
+      - name: 🛠️ Build Project Locally
+        run: |
+          npm install --save-dev @babel/plugin-proposal-private-property-in-object
+          npm install --legacy-peer-deps
+          CI=false NODE_OPTIONS="--max-old-space-size=8192" npm run build
+        env:
+          CI: false
+
+      - name: 📂 Deploy to VPS
+        uses: appleboy/scp-action@master
         with:
-          path: |
-            **/node_modules
-            ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          source: "build/"
+          target: "~/apps/lms/frontend/"
 
-      - name: 🔑 Connect to VPS & Deploy
+      - name: 🚀 Setup on VPS
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          script_stop: true
-          command_timeout: 30m
           script: |
-            # Load environment
-            source ~/.bashrc
-            source ~/.profile
-            
-            # Setup NVM
-            export NVM_DIR="$HOME/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            
-            # Set Node.js version
-            nvm use 18 || nvm install 18
-            
-            # Setup project directory
-            APP_DIR=~/apps/lms/frontend
-            mkdir -p $APP_DIR
-            cd $APP_DIR
-            
-            # Repository management
-            if [ -d ".git" ]; then
-              echo "🔄 Updating repository..."
-              git fetch origin deploy
-              git reset --hard origin/deploy
-            else
-              echo "📥 Cloning repository..."
-              git clone -b deploy https://github.com/pgvda/LMS-Supun-Front.git .
-            fi
-            
-            # Clean install and build
-            echo "🧹 Cleaning previous build..."
-            rm -rf node_modules build
-            
-            # Fix babel dependency issue
-            echo "📦 Adding missing babel plugin..."
-            npm install --save-dev @babel/plugin-proposal-private-property-in-object
-            
-            echo "📦 Installing dependencies..."
-            export NODE_OPTIONS="--max-old-space-size=4096"
-            npm clean-install --prefer-offline
-            
-            echo "🛠️ Building project..."
-            CI=false npm run build
-            
-            echo "🚀 Setting up PM2..."
+            cd ~/apps/lms/frontend
             npm install -g serve pm2
-            
-            echo "💡 Restarting service..."
             pm2 delete lms-frontend 2>/dev/null || true
             pm2 start serve --name "lms-frontend" -- -s build -l 3000
             pm2 save
-            
-            echo "✅ Deployment complete!"
