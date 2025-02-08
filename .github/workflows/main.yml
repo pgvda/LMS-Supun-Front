@@ -51,8 +51,9 @@ jobs:
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 
+            # Install serve globally if not installed
             npm install -g serve
-            
+
             # Setup application
             cd ~/apps/lms/frontend
             
@@ -62,11 +63,11 @@ jobs:
               pm2 delete lms-frontend
             fi
 
-            # Start a new PM2 process with serve
+            # Start new PM2 process with ESM support
             echo "Starting new PM2 process"
-            pm2 start serve --name "lms-frontend" -- -s build -l 3000
-            
+            pm2 start "node --loader esm serve -s build -l 3000" --name "lms-frontend"
+
             # Save PM2 process list
             pm2 save
-            
+
             echo "✅ Deployment complete!"
