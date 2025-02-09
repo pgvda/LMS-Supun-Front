@@ -1,17 +1,44 @@
-name: Deploy FrontEnd
+name: Deploy Frontend
+
 on:
   push:
     branches:
       - deploy
       - main
+
 jobs:
-  deploy:
+  build-and-deploy:
     if: github.ref == 'refs/heads/deploy'
     runs-on: ubuntu-latest
+    
     steps:
-      - name: Checkout code
+      - name: 🚀 Checkout Code
         uses: actions/checkout@v2
-      - name: Connect with VPS
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '18'
+
+      - name: 🛠️ Build Project Locally
+        run: |
+          npm install --save-dev @babel/plugin-proposal-private-property-in-object
+          npm install --legacy-peer-deps
+          CI=false NODE_OPTIONS="--max-old-space-size=8192" npm run build
+        env:
+          CI: false
+
+      - name: 📂 Deploy to VPS
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          source: "build/"
+          target: "~/apps/lms/frontend/"
+
+      - name: 🔧 Setup VPS Environment
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
@@ -19,33 +46,28 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            # Load environment variables and PATH
-            source ~/.bashrc
-            source ~/.profile
-            
+
             # If using NVM, initialize it
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+            # Install serve globally if not installed
+            npm install -g http-server
+
+            # Setup application
+            cd ~/apps/lms/frontend
             
-            mkdir -p apps/lms/frontend && cd apps/lms/frontend
-            if [ -d ".git" ]; then
-              git stash
-              git pull origin deploy
-            else
-              git clone -b deploy https://github.com/pgvda/LMS-Supun-Front.git .
-            fi
-            
-            # Install dependencies
-            npm install --force
-            npm run build
-            
-            # Check if PM2 process exists
+            # Stop existing PM2 process if it exists
             if pm2 list | grep -q "lms-frontend"; then
+              echo "Deleting existing PM2 process"
               pm2 delete lms-frontend
             fi
-            
-            pm2 serve build 3000 --name "lms-frontend" --spa  # Serve React App
-            
+
+            # Start new PM2 process with ESM support
+            echo "Starting new PM2 process"
+            pm2 start http-server --name "lms-frontend" -- ./build -p 3000
+
+            # Save PM2 process list
             pm2 save
-            
-            echo "Deployment completed successfully"
+
+            echo "✅ Deployment complete!"
