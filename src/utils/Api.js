@@ -1,3 +1,4 @@
-const Api = 'http://194.113.64.156/api/'
+const Api = 'http://historywithchandima.site/api/'
+// const Api = 'http://localhost:4000/api/'
 
 export default Api;
