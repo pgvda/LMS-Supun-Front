@@ -7,7 +7,7 @@ import axios from 'axios';
 import Api from '../../utils/Api';
 import Swal from 'sweetalert2'
 
-const batchsData = ['2024', '2025'];
+const batchsData = ['2025','2026','2027'];
 const classTypeData = ['Theory', 'Revision', 'Paper', 'Theory&Revision'];
 const districData = [
   "Colombo",
