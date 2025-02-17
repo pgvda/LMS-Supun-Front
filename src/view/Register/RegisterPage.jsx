@@ -8,7 +8,37 @@ import Api from '../../utils/Api';
 import Swal from 'sweetalert2'
 
 const batchsData = ['2024', '2025'];
-const classTypeData = ['Theory', 'Revision', 'Paper'];
+const classTypeData = ['Theory', 'Revision', 'Paper', 'Theory&Revision'];
+const districData = [
+  "Colombo",
+  "Gampaha",
+  "Kalutara",
+  "Kandy",
+  "Matale",
+  "Nuwara Eliya",
+  "Galle",
+  "Matara",
+  "Hambantota",
+  "Jaffna",
+  "Kilinochchi",
+  "Mannar",
+  "Vavuniya",
+  "Mullaitivu",
+  "Batticaloa",
+  "Ampara",
+  "Trincomalee",
+  "Kurunegala",
+  "Puttalam",
+  "Anuradhapura",
+  "Polonnaruwa",
+  "Badulla",
+  "Monaragala",
+  "Ratnapura",
+  "Kegalle",
+];
+
+console.log(districData);
+
 
 const RegisterPage = () => {
   const [batch, setBatch] = useState('');
@@ -29,10 +59,10 @@ const RegisterPage = () => {
     europeHistory: false,
     historyType:'',
     batch:'',
-    classType:'',
-    className:''
+    classType:''
   });
   const [classTypes, setClassTypes] = useState([]);
+  const [district, setDistrict] = useState([]);
 
   const navigate = useNavigate();
 
@@ -54,15 +84,15 @@ const RegisterPage = () => {
     }))
   };
 
-  const handleClassNameChange = (event) => {
-    const newClassName = event.target.value;
-    setClassName(newClassName);
+  const handleDistrictChange = (event) => {
+    const district = event.target.value;
+    setDistrict(district);
     setRegisterData((prev) => ({
       ...prev,
-      className:newClassName
+      district:district
     }))
   };
-  
+
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -103,6 +133,7 @@ const RegisterPage = () => {
       console.log(registerData);
       const response = await axios.post(Api + 'students/student/register', registerData);
     
+      console.log(response)
 
       if(response.data.code === 200){
         await Swal.fire({
@@ -218,14 +249,23 @@ const RegisterPage = () => {
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <TextField 
-                label="districtt" 
-                size="small" 
-                fullWidth 
-                name="district" 
-                value={registerData.district}
-                onChange={handleInputChange} 
-              />
+              <FormControl fullWidth size="small">
+                <InputLabel id="class-type-select-label">Distric</InputLabel>
+                <Select
+                  labelId="class-type-select-label"
+                  value={district}
+                  onChange={handleDistrictChange}
+                  label="Dristric"
+                  name="district"
+                >
+                  {districData.map((data, index) => (
+                    <MenuItem key={index} value={data}>
+                      {data}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField 
