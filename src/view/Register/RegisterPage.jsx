@@ -297,25 +297,7 @@ const RegisterPage = () => {
               </FormControl>
               
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <FormControl fullWidth size="small">
-                <InputLabel id="class-select-label">Class</InputLabel>
-                <Select
-                  labelId="class-select-label"
-                  value={className}
-                  onChange={handleClassNameChange}
-                  label="Class"
-                  name="className"
-                >
-                  {classTypes.map((data, index) => (
-                    <MenuItem key={index} value={data}>
-                      {data}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-              
-            </Grid>
+
             <Grid item xs={12} sm={6}>
               <Button
                 variant="contained"
