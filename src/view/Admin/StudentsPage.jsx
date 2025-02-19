@@ -48,6 +48,8 @@ const StudentsPage = () => {
         setChecked(event.target.checked);
     };
 
+    console.log(logingId);
+
     const converTrueFales = (state) => {
         if(state === 'active'){
             return true;
@@ -66,6 +68,8 @@ const StudentsPage = () => {
                     'admin_id':logingId
                 }
             })
+
+            console.log(response)
 
             if(response.data.code ===200){
                 setStudentDataList(response.data.data);
@@ -111,7 +115,7 @@ const StudentsPage = () => {
 
     React.useEffect(() =>{
         fetchStudentList();
-    },[token])
+    },[])
 
     return (
         <Box sx={{minHeight:'75vh'}}>

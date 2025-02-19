@@ -23,7 +23,7 @@ import TimelineIcon from '@mui/icons-material/Timeline';
 import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 import { Avatar, Button } from '@mui/material';
 import COLORS from '../../utils/Colors';
-import profile from '../../assets/logo.jpeg'
+import profile from '../../assets/logo.jpg'
 import { Outlet, useNavigate } from 'react-router-dom';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
