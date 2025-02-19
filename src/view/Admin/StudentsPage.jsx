@@ -79,7 +79,9 @@ const StudentsPage = () => {
             console.error(err)
         }
     }
-    const rows = studentDataList.map(student =>
+    const rows = studentDataList
+        .sort((a, b) => a.batch.localeCompare(b.batch))
+        .map(student =>
         createData(student.name, student.batch, student.classType, student.whatsAppNo,  student.regNo, student.accountState, student._id)
     )
 
