@@ -30,7 +30,7 @@ const HomePage = () => {
   const fetchFiles = async () => {
     try {
       const email = userEmail;
-      const response = await fetch(`http://localhost:4000/files?email=${encodeURIComponent(email)}`);
+      const response = await fetch(`https://historywithchandima.site/files?email=${encodeURIComponent(email)}`);
       if (!response.ok) throw new Error('Failed to fetch files');
       const data = await response.json();
       setFiles(data);
@@ -44,7 +44,7 @@ const HomePage = () => {
   const handleFolderView = async (folderId) => {
     setIsClicked(true);
     try {
-      const response = await fetch(`http://localhost:4000/files/content/${folderId}`);
+      const response = await fetch(`https://historywithchandima.site/files/content/${folderId}`);
       if (!response.ok) throw new Error('Failed to fetch files');
       const data = await response.json();
       setFileContent(data);
@@ -114,7 +114,7 @@ const HomePage = () => {
             fullWidth
             onClick={() => {
               const encodedId = btoa(file.id); 
-              window.open(`http://localhost:4000/api/secure-folders/secure-file?id=${encodedId}`, '_blank');
+              window.open(`https://historywithchandima.site/secure-folders/secure-file?id=${encodedId}`, '_blank');
             }}
             target="_blank"
             rel="noopener noreferrer"
