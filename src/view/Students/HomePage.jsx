@@ -30,9 +30,10 @@ const HomePage = () => {
   const fetchFiles = async () => {
     try {
       const email = userEmail;
-      const response = await fetch(`https://historywithchandima.site/files?email=${encodeURIComponent(email)}`);
+      const response = await fetch(`https://historywithchandima.site/api/folders/diveFiles/${email}`);
       if (!response.ok) throw new Error('Failed to fetch files');
       const data = await response.json();
+      console.log(data);
       setFiles(data);
     } catch (error) {
       console.error('Error fetching files:', error.message);
@@ -44,7 +45,7 @@ const HomePage = () => {
   const handleFolderView = async (folderId) => {
     setIsClicked(true);
     try {
-      const response = await fetch(`https://historywithchandima.site/files/content/${folderId}`);
+      const response = await fetch(`https://historywithchandima.site/api/folders/folderContent/${folderId}`);
       if (!response.ok) throw new Error('Failed to fetch files');
       const data = await response.json();
       setFileContent(data);
