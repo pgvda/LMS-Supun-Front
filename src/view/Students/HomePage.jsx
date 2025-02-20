@@ -34,7 +34,7 @@ const HomePage = () => {
       if (!response.ok) throw new Error('Failed to fetch files');
       const data = await response.json();
       console.log(data);
-      setFiles(data);
+      setFiles(files);
     } catch (error) {
       console.error('Error fetching files:', error.message);
     } finally {
@@ -48,7 +48,7 @@ const HomePage = () => {
       const response = await fetch(`https://historywithchandima.site/api/folders/folderContent/${folderId}`);
       if (!response.ok) throw new Error('Failed to fetch files');
       const data = await response.json();
-      setFileContent(data);
+      setFileContent(files);
     } catch (error) {
       console.error('Error fetching files:', error.message);
     }
