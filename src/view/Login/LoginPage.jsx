@@ -9,9 +9,9 @@ import { useNavigate } from 'react-router-dom';
 import Api from '../../utils/Api';
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import banner1 from '../../assets/banner1.jpeg';
-import banner2 from '../../assets/banner2.jpeg';
-import banner3 from '../../assets/banner3.jpeg';
+import banner1 from '../../assets/banner1.jpg';
+import banner2 from '../../assets/banner2.png';
+import banner3 from '../../assets/banner3.png';
 import Carousel from 'react-multi-carousel';
 import "react-multi-carousel/lib/styles.css";
 

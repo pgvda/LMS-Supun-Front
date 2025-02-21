@@ -115,7 +115,7 @@ const HomePage = () => {
             fullWidth
             onClick={() => {
               const encodedId = btoa(file.id); 
-              window.open(`https://historywithchandima.site/secure-folders/secure-file?id=${encodedId}`, '_blank');
+              window.open(`https://historywithchandima.site/api/secure-folders/secure-file?id=${encodedId}`, '_blank');
             }}
             target="_blank"
             rel="noopener noreferrer"
