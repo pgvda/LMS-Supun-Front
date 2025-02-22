@@ -7,9 +7,10 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { Box, Switch, Typography } from '@mui/material';
+import { Box, IconButton, Switch, Typography } from '@mui/material';
 import axios from 'axios';
-import Api from '../../utils/Api'
+import Api from '../../utils/Api';
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -31,8 +32,8 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     },
 }));
 
-function createData(name, batch, classType, whatsAppNo,  regNo, state, id) {
-    return { name, batch, classType, whatsAppNo,  regNo, state, id };
+function createData(name, batch, classType, email,  regNo, state, id, whatsAppNo) {
+    return { name, batch, classType, email,  regNo, state, id, whatsAppNo };
 }
 
 
@@ -82,7 +83,7 @@ const StudentsPage = () => {
     const rows = studentDataList
         .sort((a, b) => a.batch.localeCompare(b.batch))
         .map(student =>
-        createData(student.name, student.batch, student.classType, student.whatsAppNo,  student.regNo, student.accountState, student._id)
+        createData(student.name, student.batch, student.classType, student.email,  student.regNo, student.accountState, student._id, student.whatsAppNo)
     )
 
 
@@ -141,7 +142,8 @@ const StudentsPage = () => {
                                 <StyledTableCell>Name</StyledTableCell>
                                 <StyledTableCell align="right">Batch</StyledTableCell>
                                 <StyledTableCell align="right">ClassType</StyledTableCell>
-                                <StyledTableCell align="right">WhatsApp</StyledTableCell>
+                                <StyledTableCell align="right">Email</StyledTableCell>
+                                <StyledTableCell align="right">Whats AppNo</StyledTableCell>
                                 <StyledTableCell align="right">RegNo</StyledTableCell>
                             </TableRow>
                         </TableHead>
@@ -153,6 +155,15 @@ const StudentsPage = () => {
                                     </StyledTableCell>
                                     <StyledTableCell align="right">{row.batch}</StyledTableCell>
                                     <StyledTableCell align="right">{row.classType}</StyledTableCell>
+                                    <StyledTableCell align="right">
+          {row.email}
+          <IconButton
+            size="small"
+            onClick={() => navigator.clipboard.writeText(row.email)}
+          >
+            <ContentCopyIcon fontSize="small" />
+          </IconButton>
+        </StyledTableCell>
                                     <StyledTableCell align="right">{row.whatsAppNo}</StyledTableCell>
                                     <StyledTableCell align="right">{row.regNo}</StyledTableCell>
                                     <StyledTableCell align="right">
