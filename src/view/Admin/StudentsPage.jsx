@@ -7,13 +7,16 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { Box, IconButton, Stack, Switch, Typography } from '@mui/material';
+import { Box, Button, IconButton, Stack, Switch, Typography } from '@mui/material';
 import axios from 'axios';
 import Api from '../../utils/Api';
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import Swal from 'sweetalert2';
+import StudentPageProfileViewModel from '../../components/studentPage/StudentPageProfileViewModel';
+
+
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -44,6 +47,8 @@ function createData(name, batch, classType, email, regNo, state, id, whatsAppNo)
 const StudentsPage = () => {
     const [checked, setChecked] = React.useState(true);
     const [studentDataList, setStudentDataList] = React.useState([]);
+    const [isModelOpen, setIsModelOpen] = React.useState(false);
+    const [seletedId, setSelectedId] = React.useState();
 
     const logingId = localStorage.getItem('id');
     const token = localStorage.getItem('token');
@@ -160,6 +165,15 @@ const StudentsPage = () => {
         }
     }
 
+    const handleClose = () => {
+        setIsModelOpen(false);
+    }
+
+    const viewProfileDetails = (id) => {
+        setSelectedId(id);
+        setIsModelOpen(true);
+    }
+
     React.useEffect(() => {
         fetchStudentList();
     }, [])
@@ -230,6 +244,12 @@ const StudentsPage = () => {
                                                     scale:1.1
                                                 }
                                             }}/>
+                                            <Button 
+                                            onClick={() => viewProfileDetails(row.id)}
+                                            sx={{
+                                                textTransform:'capitalize',
+                                                
+                                            }}>View</Button>
                                         </Stack>
                                     </StyledTableCell>
                                 </StyledTableRow>
@@ -239,6 +259,7 @@ const StudentsPage = () => {
                 </TableContainer>
 
             </Box>
+            <StudentPageProfileViewModel open={isModelOpen} handleClose={handleClose} id={seletedId}/>
         </Box>
     )
 }
