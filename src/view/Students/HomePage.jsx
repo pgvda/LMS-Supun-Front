@@ -18,6 +18,7 @@ import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import FolderIcon from '@mui/icons-material/Folder';
 
+
 const HomePage = () => {
   const [files, setFiles] = useState([]);
   const [fileContent, setFileContent] = useState([]);
@@ -33,8 +34,10 @@ const HomePage = () => {
       const response = await fetch(`https://historywithchandima.site/api/folders/diveFiles/${email}`);
       if (!response.ok) throw new Error('Failed to fetch files');
       const data = await response.json();
-      console.log(data);
+
       setFiles(data.files);
+
+
     } catch (error) {
       console.error('Error fetching files:', error.message);
     } finally {
@@ -49,6 +52,8 @@ const HomePage = () => {
       if (!response.ok) throw new Error('Failed to fetch files');
       const data = await response.json();
       setFileContent(data.files);
+
+      console.log('viewData', data)
     } catch (error) {
       console.error('Error fetching files:', error.message);
     }
@@ -56,12 +61,58 @@ const HomePage = () => {
 
 
 
+
+
   useEffect(() => {
     fetchFiles();
   }, []);
 
-  const FileCard = ({ file, onClick, isLink }) => (
-    <Card 
+  const FileCard = ({ file, onClick}) => {
+
+    console.log(file.mimeType, file.name)
+
+    const mimeType = file.mimeType;
+    const name = file.name;
+    
+
+    const handleFileType = (mimeType = '', name = '') => {
+      console.log(`mimeType: ${mimeType}, name: ${name}`); // Debugging Log
+  
+      const cleanCategory = mimeType.trim();
+      const cleanName = name.trim();
+  
+      if (cleanCategory === 'application/vnd.google-apps.folder') {
+          console.log(`File Type Identified: Folder - ${cleanName}`);
+          return 'Folder';
+      }
+  
+      if (cleanCategory === 'video/mp4' || cleanName.endsWith('.mp4')) {
+          console.log(`File Type Identified: Video - ${cleanName}`);
+          return 'Video';
+      }
+  
+      if (cleanCategory === 'application/pdf' || cleanName.endsWith('.pdf')) {
+          console.log(`File Type Identified: PDF - ${cleanName}`);
+          return 'PDF';
+      }
+  
+      if (!cleanCategory) {
+          console.log(`File Type Identified: Unknown - ${cleanName}`);
+          return 'Unknown';
+      }
+  
+      console.log(`File Type Identified: Unknown`);
+      return 'Unknown';
+  };
+  
+
+  const fileType = handleFileType(mimeType, name);
+  
+    
+
+
+    return(
+      <Card 
       sx={{ 
         height: '100%',
         display: 'flex',
@@ -81,19 +132,13 @@ const HomePage = () => {
             mb: 2,
           }}
         >
-          {isLink ? (
-            <InsertDriveFileIcon 
-              sx={{ 
-                fontSize: 40,
-                color: theme.palette.primary.main,
-              }} 
+          {fileType === 'Folder' ? (
+            <FolderIcon 
+              sx={{ fontSize: 40, color: theme.palette.primary.main }} 
             />
           ) : (
-            <FolderIcon 
-              sx={{ 
-                fontSize: 40,
-                color: theme.palette.primary.main,
-              }} 
+            <InsertDriveFileIcon 
+              sx={{ fontSize: 40, color: theme.palette.primary.main }} 
             />
           )}
           <Typography
@@ -104,22 +149,22 @@ const HomePage = () => {
               fontWeight: 500,
             }}
           >
-            {file.name}
+            {name}
           </Typography>
         </Box>
       </CardContent>
+  
       <CardActions sx={{ p: 2, pt: 0 }}>
-        {isLink ? (
+        {fileType === 'Video' || fileType === 'PDF' ? (
           <Button
             variant="contained"
             fullWidth
             onClick={() => {
-              const encodedId = btoa(file.id); 
+              const encodedId = btoa(file.id);
               window.open(`https://historywithchandima.site/api/secure-folders/secure-file?id=${encodedId}`, '_blank');
             }}
             target="_blank"
             rel="noopener noreferrer"
-           
             sx={{
               textTransform: 'none',
               py: 1,
@@ -132,7 +177,7 @@ const HomePage = () => {
           <Button
             variant="contained"
             fullWidth
-            onClick={() => onClick(file.id)}
+            onClick={() => handleFolderView(file.id)}
             sx={{
               textTransform: 'none',
               py: 1,
@@ -144,7 +189,10 @@ const HomePage = () => {
         )}
       </CardActions>
     </Card>
-  );
+    )
+  };
+
+ 
 
   return (
     <Container maxWidth="lg">
@@ -215,7 +263,7 @@ const HomePage = () => {
               files.length > 0 ? (
                 files.map((file) => (
                   <Grid item xs={12} sm={6} md={4} key={file.id}>
-                    <FileCard file={file} onClick={handleFolderView} isLink={false} />
+                    <FileCard file={file} onClick={handleFolderView} />
                   </Grid>
                 ))
               ) : (
@@ -235,7 +283,7 @@ const HomePage = () => {
             ) : (
               fileContent.map((file) => (
                 <Grid item xs={12} sm={6} md={4} key={file.id}>
-                  <FileCard file={file} onClick={null} isLink={true} />
+                  <FileCard file={file} onClick={null} />
                 </Grid>
               ))
             )}
