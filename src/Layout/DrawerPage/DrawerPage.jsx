@@ -51,7 +51,7 @@ const drawerMenu = [
     {
         name:'Add Student',
         icon:<PersonAddAltIcon/>,
-        path:'/devIndicate'
+        path:'/addStudent'
     },
     {
       name:'Profile',
