@@ -9,6 +9,7 @@ import DevIndicate from './view/DevIndicate';
 import ForgotPasswordPage from './view/ForgotPassword/ForgotPasswordPage';
 import Footer from './Layout/Footer/Footer';
 import ProfilePage from './view/ProfilePage';
+import AddStudentPage from './view/Admin/AddStudentPage';
 
 
 function DrawerLayout() {
@@ -34,6 +35,7 @@ function App() {
             <Route path='home' element={<HomePage />} />
             <Route path='students' element={<StudentsPage />} />
             <Route path='devIndicate' element={<DevIndicate />} />
+            <Route path='addStudent' element={<AddStudentPage />} />
             <Route path='profile' element={<ProfilePage />} />
           </Route>
         </Routes>
