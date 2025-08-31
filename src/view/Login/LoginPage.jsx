@@ -45,7 +45,7 @@ import banner3 from '../../assets/banner3.png';
 import Carousel from 'react-multi-carousel';
 import "react-multi-carousel/lib/styles.css";
 
-const data = [banner1, banner2, banner3];
+// const data = [banner1, banner2, banner3];
 
 const responsive = {
     desktop: {
@@ -119,16 +119,12 @@ const LoginPage = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [currentSlide, setCurrentSlide] = useState(0);
+    const [imgData, setImgData] = useState([]);
 
     const navigate = useNavigate();
 
     // Auto-rotate carousel
-    useEffect(() => {
-      const interval = setInterval(() => {
-        setCurrentSlide((prev) => (prev + 1) % data.length);
-      }, 4000);
-      return () => clearInterval(interval);
-    }, []);
+
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -139,6 +135,19 @@ const LoginPage = () => {
     const handleMouseUpPassword = (event) => {
         event.preventDefault();
     };
+
+    const fetchBanner = async () => {
+        const response = await axios.get(Api + 'banners/get-url')
+
+        console.log(response);
+        if (response.data.code === 200) {
+          
+            setImgData(response.data.data)
+
+
+        }
+       
+    }
 
     const loginHandle = async () => {
         try {
@@ -195,6 +204,23 @@ const LoginPage = () => {
         { icon: <School />, title: 'Smart Learning', desc: 'AI-powered education' },
         { icon: <Support />, title: '24/7 Support', desc: 'Always here to help' }
     ];
+
+    useEffect(() => {
+        fetchBanner();
+
+    }, []);
+
+    useEffect(() => {
+  if (imgData.length > 0) {
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % imgData.length);
+    }, 4000);
+
+    return () => clearInterval(interval); 
+  }
+}, [imgData]);
+
+
 
     return (
         <Box sx={{
@@ -308,7 +334,7 @@ const LoginPage = () => {
                                     transitionDuration={1000}
                                     removeArrowOnDeviceType={["tablet", "mobile"]}
                                 >
-                                    {data.map((img, index) => (
+                                    {imgData.map((img, index) => (
                                         <Box key={index} sx={{ position: 'relative' }}>
                                             <img 
                                                 src={img} 
