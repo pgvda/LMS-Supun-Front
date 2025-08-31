@@ -56,6 +56,11 @@ const drawerMenu = [
         path:'/addStudent'
     },
     {
+        name:'Social',
+        icon:<PersonAddAltIcon/>,
+        path:'/social'
+    },
+    {
       name:'Profile',
       icon:<AccountCircleIcon/>,
       path:'/profile'

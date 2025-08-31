@@ -10,7 +10,7 @@ import ForgotPasswordPage from './view/ForgotPassword/ForgotPasswordPage';
 import Footer from './Layout/Footer/Footer';
 import ProfilePage from './view/ProfilePage';
 import AddStudentPage from './view/Admin/AddStudentPage';
-
+import SocialMediaPage from './view/Admin/SocialMediaPage'
 
 function DrawerLayout() {
   return (
@@ -37,6 +37,7 @@ function App() {
             <Route path='devIndicate' element={<DevIndicate />} />
             <Route path='addStudent' element={<AddStudentPage />} />
             <Route path='profile' element={<ProfilePage />} />
+            <Route path='social' element={<SocialMediaPage />} />
           </Route>
         </Routes>
       </HashRouter>

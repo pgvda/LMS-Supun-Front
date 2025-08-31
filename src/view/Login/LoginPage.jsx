@@ -193,8 +193,6 @@ const LoginPage = () => {
 
     const features = [
         { icon: <School />, title: 'Smart Learning', desc: 'AI-powered education' },
-        { icon: <Security />, title: 'Secure Access', desc: 'Bank-level security' },
-        { icon: <Speed />, title: 'Lightning Fast', desc: 'Optimized performance' },
         { icon: <Support />, title: '24/7 Support', desc: 'Always here to help' }
     ];
 
@@ -447,69 +445,7 @@ const LoginPage = () => {
                                 </Typography>
                             </Box>
 
-                            {/* Social Login Buttons */}
-                            <Stack spacing={2} sx={{ mb: 3 }}>
-                                <Button
-                                    fullWidth
-                                    variant="outlined"
-                                    startIcon={<Google sx={{ color: '#4285f4' }} />}
-                                    sx={{
-                                        py: 1.8,
-                                        borderRadius: 3,
-                                        textTransform: 'none',
-                                        fontSize: '1rem',
-                                        fontWeight: 600,
-                                        borderColor: alpha('#000', 0.1),
-                                        color: '#374151',
-                                        background: '#fff',
-                                        transition: 'all 0.3s ease',
-                                        '&:hover': {
-                                            borderColor: '#4285f4',
-                                            backgroundColor: alpha('#4285f4', 0.05),
-                                            transform: 'translateY(-2px)',
-                                            boxShadow: '0 8px 25px rgba(66, 133, 244, 0.2)'
-                                        }
-                                    }}
-                                >
-                                    Continue with Google
-                                </Button>
-                                <Button
-                                    fullWidth
-                                    variant="outlined"
-                                    startIcon={<Facebook sx={{ color: '#1877f2' }} />}
-                                    sx={{
-                                        py: 1.8,
-                                        borderRadius: 3,
-                                        textTransform: 'none',
-                                        fontSize: '1rem',
-                                        fontWeight: 600,
-                                        borderColor: alpha('#000', 0.1),
-                                        color: '#374151',
-                                        background: '#fff',
-                                        transition: 'all 0.3s ease',
-                                        '&:hover': {
-                                            borderColor: '#1877f2',
-                                            backgroundColor: alpha('#1877f2', 0.05),
-                                            transform: 'translateY(-2px)',
-                                            boxShadow: '0 8px 25px rgba(24, 119, 242, 0.2)'
-                                        }
-                                    }}
-                                >
-                                    Continue with Facebook
-                                </Button>
-                            </Stack>
-
-                            <Divider sx={{ my: 3 }}>
-                                <Chip 
-                                    label="Or continue with email" 
-                                    sx={{ 
-                                        bgcolor: alpha('#667eea', 0.1),
-                                        color: '#667eea',
-                                        fontWeight: 600,
-                                        fontSize: '0.875rem'
-                                    }} 
-                                />
-                            </Divider>
+                           
 
                             {/* Enhanced Login Form */}
                             <Stack spacing={3}>
