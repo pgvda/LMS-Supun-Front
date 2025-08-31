@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Tabs,
@@ -42,13 +42,7 @@ export default function SocialMediaUI() {
     console.log(formData)
     if (formData.message.trim()) {
       setMessages([...messages, { ...formData, id: Date.now() }]);
-      setFormData({
-        message: "",
-        link: "",
-        batch: "",
-        region: "India",
-        classType: "Theory",
-      });
+
     }
 
     const response = await axios.post(Api + 'messages/message/send', formData,{
@@ -59,7 +53,45 @@ export default function SocialMediaUI() {
 
     console.log(response);
 
+    if(response.data.code === 200){
+      setFormData({
+        message: "",
+        link: "",
+        batch: "",
+        region: "India",
+        classType: "Theory",
+      });
+    }
+
   };
+
+  const fetchMsg = async() => {
+    const response = await axios.get(Api + 'messages/message/get-all',{
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      }
+    })
+
+    console.log('all msg', response);
+
+    if(response.data.code === 200){
+      setMessages(response.data.data);
+    }
+  }
+
+  const handleDeleteMsg = async(id) => {
+    console.log(id)
+    const response = await axios.delete(Api + 'messages/message/delete/'+ id,{
+      headers:{
+        'Authorization': `Bearer ${token}`,
+      }
+    })
+    console.log(response);
+
+    if(response.data.code === 200){
+      setMessages(messages.filter((m)=> m._id !== id))
+    }
+  }
 
   // Handle image upload
   const handleImageUpload = (e) => {
@@ -83,6 +115,10 @@ export default function SocialMediaUI() {
     boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
   };
 
+  useEffect(()=> {
+    fetchMsg();
+  },[])
+
   const inputStyle = {
     '& .MuiOutlinedInput-root': {
       background: 'rgba(255, 255, 255, 0.1)',
@@ -104,7 +140,7 @@ export default function SocialMediaUI() {
       fontWeight: 500,
       '&.Mui-focused': {
         color: 'white',
-      },
+      }, 
     },
     '& .MuiInputBase-input': {
       color: 'white',
@@ -518,7 +554,8 @@ export default function SocialMediaUI() {
                           <IconButton
                             size="small"
                             onClick={() =>
-                              setMessages(messages.filter((m) => m.id !== msg.id))
+                              handleDeleteMsg(msg._id)
+                              
                             }
                             sx={{
                               color: 'rgba(255, 120, 120, 0.8)',
