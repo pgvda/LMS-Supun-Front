@@ -11,6 +11,7 @@ import Footer from './Layout/Footer/Footer';
 import ProfilePage from './view/ProfilePage';
 import AddStudentPage from './view/Admin/AddStudentPage';
 import SocialMediaPage from './view/Admin/SocialMediaPage'
+import Messages from './view/Students/Messages';
 
 function DrawerLayout() {
   return (
@@ -38,6 +39,7 @@ function App() {
             <Route path='addStudent' element={<AddStudentPage />} />
             <Route path='profile' element={<ProfilePage />} />
             <Route path='social' element={<SocialMediaPage />} />
+            <Route path='message' element={<Messages />} />
           </Route>
         </Routes>
       </HashRouter>

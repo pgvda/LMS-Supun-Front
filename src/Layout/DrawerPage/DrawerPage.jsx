@@ -61,6 +61,11 @@ const drawerMenu = [
         path:'/social'
     },
     {
+        name:'Message',
+        icon:<PersonAddAltIcon/>,
+        path:'/message'
+    },
+    {
       name:'Profile',
       icon:<AccountCircleIcon/>,
       path:'/profile'
@@ -143,7 +148,7 @@ const DrawerPage = (props) => {
 
  
     const filteredMenu = drawerMenu.filter(item => 
-      accountType === 'admin' || item.name === 'Home' || item.name === 'Profile'
+      accountType === 'admin' || item.name === 'Home' || item.name === 'Profile' || item.name === 'Message'
     );
   
     const drawer = (
