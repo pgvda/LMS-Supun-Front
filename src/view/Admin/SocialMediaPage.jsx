@@ -28,7 +28,7 @@ export default function SocialMediaUI() {
     message: "",
     link: "",
     batch: "",
-    region: "India",
+    region: "Indian",
     classType: "Theory",
   });
   const [bannerImages, setBannerImages] = useState([]);
@@ -58,7 +58,7 @@ export default function SocialMediaUI() {
         message: "",
         link: "",
         batch: "",
-        region: "India",
+        region: "Indian",
         classType: "Theory",
       });
     }
@@ -333,7 +333,7 @@ export default function SocialMediaUI() {
                     }
                     sx={inputStyle}
                   >
-                    <MenuItem value="India">🇮🇳 India</MenuItem>
+                    <MenuItem value="Indian">🇮🇳 Indian</MenuItem>
                     <MenuItem value="Europe">🇪🇺 Europe</MenuItem>
                   </TextField>
                 </Grid>

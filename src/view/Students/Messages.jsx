@@ -23,51 +23,58 @@ import {
   MenuBook,
 } from '@mui/icons-material';
 import { motion, AnimatePresence } from 'framer-motion';
+import axios from 'axios';
+import Api from '../../utils/Api'
 
-// Sample messages data - replace with your actual data source
-const sampleMessages = [
-  {
-    id: 1,
-    message: "Join our advanced React workshop this weekend! Learn about hooks, context, and performance optimization. This comprehensive session will cover everything you need to know to build modern React applications.",
-    link: "https://workshop.example.com/react-advanced",
-    region: "India",
-    classType: "Theory",
-    timestamp: "2024-01-15T10:30:00Z",
-    author: "John Doe",
-    views: 234,
-  },
-  {
-    id: 2,
-    message: "Important update: Class schedule has been revised for next week. Please check your timetable and make necessary adjustments.",
-    link: "",
-    region: "Europe",
-    classType: "Revision",
-    timestamp: "2024-01-14T15:45:00Z",
-    author: "Jane Smith",
-    views: 156,
-  },
-  {
-    id: 3,
-    message: "New course material available! Download the latest study guides and practice exercises from our resource center.",
-    link: "https://resources.example.com/study-guides",
-    region: "India",
-    classType: "Theory",
-    timestamp: "2024-01-13T09:15:00Z",
-    author: "Mike Johnson",
-    views: 89,
-  },
-];
+
 
 const Messages = () => {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [messageData, setMessagedata] = useState([]);
+
+  const classType = localStorage.getItem('classType');
+  const historyType = localStorage.getItem('historyType');
+  const batch = localStorage.getItem('batch');
+  const accountType = localStorage.getItem('accountType');
+  const token = localStorage.getItem('token');
+
+  const fetchMessage = async() => {
+    try {
+      if (accountType === 'admin') {
+        const response = await axios.get(Api + 'messages/message/get-all', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          }
+        });
+        console.log(response);
+        if (response.data.code === 200) {
+          setMessages(response.data.data);
+          setLoading(false);
+        }
+      }
+
+      if (accountType === 'user') {
+        const response = await axios.get(Api + 'messages/message/get-by-batch/' + batch + '/' + historyType + '/' + classType, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          }
+        });
+        console.log(response);
+        if (response.data.code === 200) {
+          setMessages(response.data.data);
+          setLoading(false);
+        }
+      }
+
+
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   useEffect(() => {
-    // Simulate API call
-    setTimeout(() => {
-      setMessages(sampleMessages);
-      setLoading(false);
-    }, 1500);
+    fetchMessage();
   }, []);
 
   const formatTimestamp = (timestamp) => {
@@ -275,7 +282,7 @@ const Messages = () => {
                           border: '2px solid rgba(255, 255, 255, 0.2)',
                         }}
                       >
-                        {msg.author.split(' ').map(n => n[0]).join('')}
+                        {'Class Admin'.split(' ').map(n => n[0]).join('')}
                       </Avatar>
                       <Box>
                         <Typography
@@ -285,9 +292,9 @@ const Messages = () => {
                             fontWeight: 600,
                           }}
                         >
-                          {msg.author}
+                          Class Admin
                         </Typography>
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        {/* <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                           <AccessTime sx={{ fontSize: 16, color: 'rgba(255, 255, 255, 0.7)' }} />
                           <Typography
                             variant="caption"
@@ -298,7 +305,7 @@ const Messages = () => {
                           >
                             {formatTimestamp(msg.timestamp)}
                           </Typography>
-                        </Box>
+                        </Box> */}
                       </Box>
                     </Box>
 
