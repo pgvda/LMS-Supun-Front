@@ -32,6 +32,8 @@ export default function SocialMediaUI() {
     classType: "Theory",
   });
   const [bannerImages, setBannerImages] = useState([]);
+  const [isImagesUpload, setIsImageUpload] = useState(false);
+  const [urlArray, setUrlArray] = useState([]);
 
   const token = localStorage.getItem('token');
 
@@ -106,6 +108,83 @@ export default function SocialMediaUI() {
     const updated = bannerImages.filter((_, i) => i !== index);
     setBannerImages(updated);
   };
+
+  const handleUploadProcess = () => {
+    if(isImagesUpload){
+      imageSaveInDb();
+    }
+    if(!isImagesUpload){
+      uploadImges();
+    }
+  }
+
+const uploadImges = async () => {
+  try {
+    const formData = new FormData();
+
+   
+    bannerImages.forEach((file, index) => {
+      formData.append(`image${index + 1}`, file);
+    });
+
+    console.log(formData);
+
+    const response = await axios.post(
+      Api + 'banners/upload-image',
+      formData,
+      {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
+
+    console.log(response.data);
+    if(response.data.code === 200){
+      setUrlArray(response.data.imageUrl);
+      setIsImageUpload(true);
+    }
+  } catch (err) {
+    console.log(err.response?.data || err.message);
+  }
+};
+
+const imageSaveInDb = async () => {
+  try {
+    const response = await axios.post(
+      Api + 'banners/save-url',
+      urlArray,
+      {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+      }
+    );
+
+    console.log(response.data);
+  } catch (err) {
+    console.log(err.response?.data || err.message);
+  }
+};
+
+const deleteBanners = async() => {
+  try {
+    const response = await axios.delete(
+      Api + 'banners/delete-banner',
+      {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+      }
+    );
+
+    console.log(response.data);
+  } catch (err) {
+    console.log(err.response?.data || err.message);
+  }
+}
+
 
   const glassCardStyle = {
     background: 'rgba(255, 255, 255, 0.1)',
@@ -860,7 +939,7 @@ export default function SocialMediaUI() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.3 }}
           >
-            <Box display="flex" justifyContent="center">
+            <Box display="flex" flexDirection="column" gap={1} justifyContent="center">
               <Button
                 variant="contained"
                 size="large"
@@ -889,8 +968,43 @@ export default function SocialMediaUI() {
                   },
                   transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                 }}
+
+                onClick={() => handleUploadProcess()}
               >
-                Post Banner Campaign
+                {isImagesUpload ? 'Post Banner Campaign' : 'Upload Images'}
+              </Button>
+
+              <Button
+                variant="contained"
+                size="large"
+                startIcon={<Delete />}
+                sx={{
+                  background: bannerImages.length > 0 
+                    ? 'linear-gradient(45deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.15) 100%)'
+                    : 'rgba(255, 255, 255, 0.05)',
+                  backdropFilter: 'blur(10px)',
+                  border: '1px solid rgba(255, 255, 255, 0.3)',
+                  color: bannerImages.length > 0 ? 'white' : 'rgba(255, 255, 255, 0.5)',
+                  fontWeight: 700,
+                  px: 6,
+                  py: 2,
+                  borderRadius: 4,
+                  textTransform: 'none',
+                  fontSize: '1.2rem',
+                  boxShadow: bannerImages.length > 0 ? '0 8px 32px rgba(0, 0, 0, 0.15)' : 'none',
+                  '&:hover': {
+                    background: bannerImages.length > 0 
+                      ? 'linear-gradient(45deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0.25) 100%)'
+                      : 'rgba(255, 255, 255, 0.05)',
+                    transform: bannerImages.length > 0 ? 'translateY(-4px)' : 'none',
+                    boxShadow: bannerImages.length > 0 ? '0 12px 40px rgba(0, 0, 0, 0.2)' : 'none',
+                  },
+                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                }}
+
+                onClick={() => deleteBanners()}
+              >
+                Delete All Banners
               </Button>
             </Box>
           </motion.div>
