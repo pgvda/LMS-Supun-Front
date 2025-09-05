@@ -15,6 +15,9 @@ import {
   Chip,
   Fade,
   Grow,
+  Checkbox, 
+  FormControlLabel, 
+  FormGroup
 } from "@mui/material";
 import { Delete, Edit, Send, Image, Message, PhotoCamera } from "@mui/icons-material";
 import { motion, AnimatePresence } from "framer-motion";
@@ -29,7 +32,7 @@ export default function SocialMediaUI() {
     link: "",
     batch: "",
     region: "Indian",
-    classType: "Theory",
+    classType: [],
   });
   const [bannerImages, setBannerImages] = useState([]);
   const [isImagesUpload, setIsImageUpload] = useState(false);
@@ -61,7 +64,7 @@ export default function SocialMediaUI() {
         link: "",
         batch: "",
         region: "Indian",
-        classType: "Theory",
+        classType: [],
       });
     }
 
@@ -417,21 +420,36 @@ const deleteBanners = async() => {
                   </TextField>
                 </Grid>
                 
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    select
-                    label="Class Type"
-                    value={formData.classType}
-                    onChange={(e) =>
-                      setFormData({ ...formData, classType: e.target.value })
-                    }
-                    sx={inputStyle}
-                  >
-                    <MenuItem value="Theory">📚 Theory</MenuItem>
-                    <MenuItem value="Revision">🔄 Revision</MenuItem>
-                  </TextField>
-                </Grid>
+<Grid item xs={12} sm={6}>
+  <FormGroup>
+    {["Theory", "Revision", "Paper"].map((type) => (
+      <FormControlLabel
+        key={type}
+        control={
+          <Checkbox
+            checked={formData.classType.includes(type)}
+            onChange={(e) => {
+              if (e.target.checked) {
+                // add value
+                setFormData({
+                  ...formData,
+                  classType: [...formData.classType, type],
+                });
+              } else {
+                // remove value
+                setFormData({
+                  ...formData,
+                  classType: formData.classType.filter((t) => t !== type),
+                });
+              }
+            }}
+          />
+        }
+        label={type}
+      />
+    ))}
+  </FormGroup>
+</Grid>
               </Grid>
 
               <Box mt={4} display="flex" justifyContent="flex-end">

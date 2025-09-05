@@ -27,6 +27,8 @@ import profile from '../../assets/logo.jpg'
 import { Outlet, useNavigate } from 'react-router-dom';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { Logout as LogoutIcon, Notifications as NotificationsIcon, School as SchoolIcon } from '@mui/icons-material';
+import ShareIcon from '@mui/icons-material/Share';
+import SendIcon from '@mui/icons-material/Send';
 
 
 const drawerMenu = [
@@ -40,16 +42,16 @@ const drawerMenu = [
         icon:<GroupsIcon/>,
         path:'/students'
     },
-    {
-        name:'Marks',
-        icon:<RuleIcon/>,
-        path:'/devIndicate'
-    },
-    {
-        name:'Annalise',
-        icon:<TimelineIcon/>,
-        path:'/devIndicate'
-    },
+    // {
+    //     name:'Marks',
+    //     icon:<RuleIcon/>,
+    //     path:'/devIndicate'
+    // },
+    // {
+    //     name:'Annalise',
+    //     icon:<TimelineIcon/>,
+    //     path:'/devIndicate'
+    // },
     {
         name:'Add Student',
         icon:<PersonAddAltIcon/>,
@@ -57,12 +59,12 @@ const drawerMenu = [
     },
     {
         name:'Social',
-        icon:<PersonAddAltIcon/>,
+        icon:<ShareIcon/>,
         path:'/social'
     },
     {
         name:'Message',
-        icon:<PersonAddAltIcon/>,
+        icon:<SendIcon/>,
         path:'/message'
     },
     {
