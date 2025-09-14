@@ -288,7 +288,7 @@ const LoginPage = () => {
                                     lineHeight: 1.1
                                 }}
                             >
-                                EduPlatform
+                               Chandima S. History Academy 
                             </Typography>
 
                             <Typography
@@ -301,7 +301,7 @@ const LoginPage = () => {
                                     fontSize: { xs: '1.1rem', md: '1.4rem' }
                                 }}
                             >
-                                Transform your learning experience with our cutting-edge educational platform
+                                ...ඉතිහාස කතාවේ වර්තමාන කියවීම...
                             </Typography>
 
                             {/* Enhanced Carousel */}
