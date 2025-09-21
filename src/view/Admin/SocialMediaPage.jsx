@@ -31,7 +31,7 @@ export default function SocialMediaUI() {
     message: "",
     link: "",
     batch: "",
-    region: "Indian",
+    region: [],
     classType: [],
   });
   const [bannerImages, setBannerImages] = useState([]);
@@ -63,7 +63,7 @@ export default function SocialMediaUI() {
         message: "",
         link: "",
         batch: "",
-        region: "Indian",
+        region: [],
         classType: [],
       });
     }
@@ -404,21 +404,36 @@ const deleteBanners = async() => {
                   />
                 </Grid>
                 
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    select
-                    label="Target Region"
-                    value={formData.region}
-                    onChange={(e) =>
-                      setFormData({ ...formData, region: e.target.value })
-                    }
-                    sx={inputStyle}
-                  >
-                    <MenuItem value="Indian">🇮🇳 Indian</MenuItem>
-                    <MenuItem value="Europe">🇪🇺 Europe</MenuItem>
-                  </TextField>
-                </Grid>
+<Grid item xs={12} sm={6}>
+  <FormGroup>
+    {["Indian", "Europe"].map((type) => (
+      <FormControlLabel
+        key={type}
+        control={
+          <Checkbox
+            checked={formData.region.includes(type)}
+            onChange={(e) => {
+              if (e.target.checked) {
+                // add value
+                setFormData({
+                  ...formData,
+                  region: [...formData.region, type],
+                });
+              } else {
+                // remove value
+                setFormData({
+                  ...formData,
+                  region: formData.region.filter((t) => t !== type),
+                });
+              }
+            }}
+          />
+        }
+        label={type}
+      />
+    ))}
+  </FormGroup>
+</Grid>
                 
 <Grid item xs={12} sm={6}>
   <FormGroup>
